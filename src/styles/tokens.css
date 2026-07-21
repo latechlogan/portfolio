@@ -7,7 +7,7 @@
   --surface-2:     #FFFFFF;  /* cards — About answer bubbles */
   --text-primary:  #1C1A17;
   --text-secondary:#57534C;
-  --text-muted:    #8A857B;
+  --text-muted:    #767162;  /* darkened from #8A857B — 4.59:1 on --bg (AA) */
   --border:        #E7E2D8;
 
   /* green — signature */
@@ -25,7 +25,7 @@
   --surface-2:     #26241D;
   --text-primary:  #F2EFE6;
   --text-secondary:#A8A398;
-  --text-muted:    #746F63;
+  --text-muted:    #86816F;  /* lightened from #746F63 — 4.68:1 on --bg (AA) */
   --border:        #302D25;
 
   --green-ink:     #7FD497;  /* functional on dark (lighter for contrast) */

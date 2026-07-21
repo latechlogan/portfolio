@@ -73,7 +73,7 @@ Direction: ~90% warm-neutral foundation with small, sparing color pops. Green is
   --surface-2:     #FFFFFF;  /* cards — About answer bubbles */
   --text-primary:  #1C1A17;
   --text-secondary:#57534C;
-  --text-muted:    #8A857B;
+  --text-muted:    #767162;  /* AA on --bg (4.59:1) */
   --border:        #E7E2D8;
 
   /* green — signature */
@@ -91,7 +91,7 @@ Direction: ~90% warm-neutral foundation with small, sparing color pops. Green is
   --surface-2:     #26241D;
   --text-primary:  #F2EFE6;
   --text-secondary:#A8A398;
-  --text-muted:    #746F63;
+  --text-muted:    #86816F;  /* AA on --bg (4.68:1) */
   --border:        #302D25;
 
   --green-ink:     #7FD497;  /* functional on dark (lighter for contrast) */

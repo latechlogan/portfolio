@@ -1,15 +1,165 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Hero from '../components/Hero.astro';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/Hero.astro";
+import ProjectCard from "../components/ProjectCard.astro";
 ---
 
 <BaseLayout
-	title="Home"
-	description="Design engineer — graphic-design roots, 7+ years building accessible, interactive experiences for the web."
+  title="Home"
+  description="Design engineer — graphic-design roots, 7+ years building accessible, interactive experiences for the web."
 >
-	<Hero />
-	<!-- About = Phase 5 -->
-	<section id="about"></section>
-	<!-- Projects = Phase 4 -->
-	<section id="projects"></section>
+  <Hero />
+  <!-- About = Phase 5 -->
+  <section id="about"></section>
+
+  <section id="projects" class="section" aria-labelledby="projects-heading">
+    <h2 id="projects-heading">Things I've made</h2>
+
+    <div class="cards">
+      <ProjectCard
+        title="Zapmath"
+        tagline="voice-controlled math game · web + iOS"
+        description="A flashcard game my kids play by speaking their answers out loud. Three on-device speech engines and a custom native plugin, so it works across browsers and iOS without sending a child's voice to anyone's server. React, TypeScript, tested end to end."
+        links={[
+          { label: "zapmath.app", href: "https://zapmath.app", external: true },
+          {
+            label: "GitHub",
+            href: "https://github.com/latechlogan/zapmath",
+            external: true,
+          },
+        ]}
+      />
+
+      <ProjectCard
+        title="Fox Family Electric"
+        tagline="marketing site · design to deploy"
+        description="Designed and built end to end for an electrical contractor: clean, fast, accessible, and simple for a small business to keep current. Astro, with a real CI/CD pipeline behind it."
+        links={[
+          {
+            label: "foxfamilyelectric.com",
+            href: "https://foxfamilyelectric.com",
+            external: true,
+          },
+        ]}
+      />
+
+      <ProjectCard
+        title="Provider Directory Search"
+        tagline="interaction design · dual-mode search"
+        description="A hospital physician directory that only let you browse by specialty — so if you didn't know the specialty, you opened every accordion hunting for a name. I hit that wall myself during data cleanup, then built dual-mode search: filter by specialty or by name, in real time, auto-expanding the right groups so results keep their context."
+        links={[
+          /* Case study page ships in Phase 6 (work collection + [slug].astro); linking ahead of it now. */
+          {
+            label: "Read the case study",
+            href: "/work/provider-directory-search",
+          },
+        ]}
+      />
+    </div>
+
+    <div class="legacy">
+      <h3>Before that</h3>
+      <p class="legacy-tagline">enterprise healthcare</p>
+      <p class="legacy-description">
+        Seven years designing and building healthcare web properties: responsive
+        rebuilds of legacy sites, a reusable swipeable-card component library
+        shared across three properties, an interactive hero slider, and
+        WCAG-audited accessibility work throughout.
+      </p>
+    </div>
+  </section>
+
+  <section id="contact" class="section" aria-labelledby="contact-heading">
+    <h2 id="contact-heading">Say hello</h2>
+    <p class="contact-copy">
+      I'm looking for a product team to build with — one that cares about the
+      details as much as I do. If that's you, reach out.
+    </p>
+    <p class="contact-links">
+      <a href="mailto:loganbaugh0423@gmail.com">Email</a>
+      <span class="sep" aria-hidden="true">·</span>
+      <a href="https://github.com/latechlogan" target="_blank" rel="noopener"
+        >GitHub</a
+      >
+      <span class="sep" aria-hidden="true">·</span>
+      <a
+        href="https://www.linkedin.com/in/logan-baugh/"
+        target="_blank"
+        rel="noopener">LinkedIn</a
+      >
+      <span class="sep" aria-hidden="true">·</span>
+      <a
+        href="/JonathanLoganBaugh_DesignEngineer.pdf"
+        target="_blank"
+        rel="noopener">Resume</a
+      >
+    </p>
+  </section>
 </BaseLayout>
+
+<style>
+  .section {
+    max-width: calc(var(--measure) + var(--space-4) * 2);
+    margin-inline: auto;
+    padding: var(--space-16) var(--space-4);
+  }
+
+  h2 {
+    font-size: var(--text-xl);
+    font-weight: 500;
+    margin: 0 0 var(--space-8);
+  }
+
+  .cards {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .legacy {
+    margin-top: var(--space-8);
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--border);
+  }
+
+  .legacy h3 {
+    font-size: var(--text-base);
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin: 0 0 var(--space-1);
+  }
+
+  .legacy-tagline {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: var(--text-base);
+    color: var(--text-muted);
+    margin: 0 0 var(--space-4);
+  }
+
+  .legacy-description {
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .contact-copy {
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    color: var(--text-secondary);
+    max-width: var(--measure);
+    margin: 0 0 var(--space-6);
+  }
+
+  .contact-links {
+    font-size: var(--text-sm);
+    margin: 0;
+  }
+
+  .contact-links .sep {
+    display: inline-block;
+    margin: 0 var(--space-2);
+    color: var(--text-muted);
+  }
+</style>

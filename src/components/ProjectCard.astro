@@ -1,0 +1,94 @@
+---
+interface Link {
+  label: string;
+  href: string;
+  external?: boolean;
+}
+
+interface Props {
+  title: string;
+  tagline: string;
+  description: string;
+  links: Link[];
+}
+
+const { title, tagline, description, links } = Astro.props;
+---
+
+<article class="card">
+  <h3>{title}</h3>
+  <p class="tagline">{tagline}</p>
+  <p class="description">{description}</p>
+  <p class="links">
+    {
+      links.map((link, i) => (
+        <>
+          {i > 0 && (
+            <span class="sep" aria-hidden="true">
+              ·
+            </span>
+          )}
+          <a
+            href={link.href}
+            target={link.external ? "_blank" : undefined}
+            rel={link.external ? "noopener" : undefined}
+          >
+            {link.label}
+          </a>
+        </>
+      ))
+    }
+  </p>
+</article>
+
+<style>
+  .card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-6);
+  }
+
+  h3 {
+    font-size: var(--text-lg);
+    font-weight: 500;
+    margin: 0 0 var(--space-1);
+  }
+
+  .tagline {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: var(--text-base);
+    color: var(--text-secondary);
+    margin: 0 0 var(--space-4);
+  }
+
+  .description {
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    color: var(--text-secondary);
+    margin: 0 0 var(--space-4);
+  }
+
+  .links {
+    font-size: var(--text-sm);
+    margin: 0;
+  }
+
+  .sep {
+    display: inline-block;
+    margin: 0 var(--space-2);
+    color: var(--text-muted);
+  }
+
+  /* Decorative hover wash — very subtle, per the accent map's "project-card hover wash". */
+  .card:hover {
+    border-color: var(--green-fill);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .card {
+      transition: border-color 0.15s ease;
+    }
+  }
+</style>
