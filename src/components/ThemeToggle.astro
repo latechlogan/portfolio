@@ -1,0 +1,114 @@
+---
+// Quiet icon button that flips [data-theme] on <html>, persists to
+// localStorage, and respects the user's first-visit system preference
+// (handled by the before-paint init script in BaseLayout — this component
+// only reacts to clicks after load).
+---
+
+<button type="button" class="theme-toggle" aria-label="Switch to dark theme">
+	<svg
+		class="icon icon-sun"
+		aria-hidden="true"
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		stroke-width="2"
+		stroke-linecap="round"
+		stroke-linejoin="round"
+	>
+		<circle cx="12" cy="12" r="4" />
+		<path d="M12 2v2" />
+		<path d="M12 20v2" />
+		<path d="M4.93 4.93l1.41 1.41" />
+		<path d="M17.66 17.66l1.41 1.41" />
+		<path d="M2 12h2" />
+		<path d="M20 12h2" />
+		<path d="M4.93 19.07l1.41-1.41" />
+		<path d="M17.66 6.34l1.41-1.41" />
+	</svg>
+	<svg
+		class="icon icon-moon"
+		aria-hidden="true"
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		stroke-width="2"
+		stroke-linecap="round"
+		stroke-linejoin="round"
+	>
+		<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+	</svg>
+</button>
+
+<script>
+	const button = document.querySelector<HTMLButtonElement>('.theme-toggle');
+
+	function labelFor(theme: 'light' | 'dark') {
+		return theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
+	}
+
+	if (button) {
+		// The before-paint init script (BaseLayout) already set data-theme by
+		// the time this runs, so sync the accessible name to match — treat an
+		// unset attribute as light.
+		const initial = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+		button.setAttribute('aria-label', labelFor(initial));
+
+		button.addEventListener('click', () => {
+			const root = document.documentElement;
+			const current = root.dataset.theme === 'dark' ? 'dark' : 'light';
+			const next = current === 'dark' ? 'light' : 'dark';
+
+			root.dataset.theme = next;
+			localStorage.setItem('theme', next);
+			button.setAttribute('aria-label', labelFor(next));
+		});
+	}
+</script>
+
+<style>
+	.theme-toggle {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		background: transparent;
+		border: none;
+		color: var(--text-secondary);
+		padding: var(--space-2);
+		border-radius: var(--radius);
+		cursor: pointer;
+	}
+
+	.theme-toggle:hover {
+		color: var(--text-primary);
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.theme-toggle {
+			transition: color 0.15s ease;
+		}
+	}
+
+	.icon {
+		width: 18px;
+		height: 18px;
+	}
+
+	/* Light mode (default): show the moon — clicking switches TO dark. */
+	.icon-sun {
+		display: none;
+	}
+
+	.icon-moon {
+		display: block;
+	}
+
+	/* Dark mode: show the sun — clicking switches TO light. */
+	:global(:root[data-theme='dark']) .icon-sun {
+		display: block;
+	}
+
+	:global(:root[data-theme='dark']) .icon-moon {
+		display: none;
+	}
+</style>

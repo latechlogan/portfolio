@@ -83,3 +83,11 @@ a {
   background: var(--green-tint);
   color: var(--green-ink);
 }
+
+/* UA chrome (scrollbars, form controls) follows the active theme. */
+html {
+  color-scheme: light;
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+}

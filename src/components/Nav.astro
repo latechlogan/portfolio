@@ -1,0 +1,72 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+
+const GITHUB_URL = 'https://github.com/latechlogan';
+const LINKEDIN_URL = 'https://www.linkedin.com/in/logan-baugh/';
+
+---
+
+<header>
+	<nav aria-label="Main">
+		<a class="brand" href="/">Logan Baugh</a>
+		<ul>
+			<li><a href="#about">About</a></li>
+			<li><a href="#projects">Projects</a></li>
+			<li><a href="/JonathanLoganBaugh_DesignEngineer.pdf" target="_blank" rel="noopener">Resume</a></li>
+			<!-- Visual Design link parked — not a path being pursued right now.
+			<li><a href="/Baugh_Portfolio.pdf" target="_blank" rel="noopener">Visual Design</a></li>
+			-->
+			<li><a href={GITHUB_URL} target="_blank" rel="noopener">GitHub</a></li>
+			<li><a href={LINKEDIN_URL} target="_blank" rel="noopener">LinkedIn</a></li>
+		</ul>
+		<ThemeToggle />
+	</nav>
+</header>
+
+<style>
+	header {
+		border-bottom: 1px solid var(--border);
+	}
+
+	nav {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-4);
+		max-width: 72rem;
+		margin-inline: auto;
+		padding: var(--space-4);
+	}
+
+	.brand {
+		font-weight: 500;
+		color: var(--text-primary);
+		text-decoration: none;
+	}
+
+	ul {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-4);
+		list-style: none;
+		padding: 0;
+		margin: 0 auto 0 0;
+	}
+
+	ul a {
+		font-size: var(--text-sm);
+		color: var(--text-secondary);
+		text-decoration: none;
+	}
+
+	ul a:hover {
+		color: var(--text-primary);
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		ul a {
+			transition: color 0.15s ease;
+		}
+	}
+</style>
