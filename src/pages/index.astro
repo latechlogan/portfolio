@@ -1,17 +1,60 @@
 ---
-
+// TEMPORARY: design-system proof page for the Foundation phase.
+// The real Hero + About + Projects + Contact composition lands in Phase 3+.
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title="Home" description="Design engineer portfolio of Logan Baugh.">
+	<div class="proof">
+		<h1>Design engineer</h1>
+		<p class="lead">
+			<em>make it beautiful</em> · <code>make it work</code>
+		</p>
+		<p class="body">
+			This is a temporary proof-of-concept page for the Foundation phase — verifying
+			tokens, type, and the skip link before the real hero lands in Phase 3.
+		</p>
+		<p>
+			<a href="https://astro.build">Sample link to prove focus styles</a>
+		</p>
+	</div>
+</BaseLayout>
+
+<style>
+	.proof {
+		max-width: var(--measure);
+		margin-inline: auto;
+		padding: var(--space-16) var(--space-4);
+	}
+
+	h1 {
+		font-size: var(--text-display);
+		line-height: var(--leading-tight);
+		letter-spacing: var(--tracking-tight);
+		margin: 0 0 var(--space-4);
+	}
+
+	.lead {
+		font-size: var(--text-lg);
+		margin: 0 0 var(--space-6);
+	}
+
+	.lead em {
+		font-family: var(--font-serif);
+		font-style: italic;
+	}
+
+	.lead code {
+		font-family: var(--font-mono);
+		font-size: var(--text-xs);
+		background: var(--green-tint);
+		color: var(--green-ink);
+		padding: var(--space-1) var(--space-2);
+		border-radius: var(--radius);
+	}
+
+	.body {
+		color: var(--text-secondary);
+		margin: 0 0 var(--space-4);
+	}
+</style>

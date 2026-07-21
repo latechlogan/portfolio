@@ -1,0 +1,36 @@
+---
+interface Props {
+	title: string;
+	description: string;
+}
+
+const { title, description } = Astro.props;
+
+// "Home" (or the bare root title) gets a standalone title instead of the
+// "<page> · Logan Baugh" template.
+const pageTitle =
+	title === 'Home' ? 'Logan Baugh · Design engineer' : `${title} · Logan Baugh`;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalURL} />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+<title>{pageTitle}</title>
+
+<!-- Open Graph -->
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:type" content="website" />
+<meta property="og:url" content={canonicalURL} />
+<!-- og:image added in the polish phase once og-image.png exists (Phase 7) -->
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={pageTitle} />
+<meta name="twitter:description" content={description} />

@@ -1,3 +1,8 @@
+## Project context
+
+- **`ARCHITECTURE.md`** — the source of truth for this build: stack decisions, the LOCKED design system (tokens, fonts, color rules), component inventory, and the phased build order. Read it before any build work.
+- **Copy/content** lives in the Obsidian vault at `~/Documents/Obsidian Vaults/Portfolio Site/Final/` (`Home.md`, `Provider Directory Search.md`). The vault is the source of truth for copy — reference it, don't duplicate it into the repo.
+
 ## Development
 
 When starting the dev server, use background mode:

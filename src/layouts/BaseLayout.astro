@@ -1,0 +1,53 @@
+---
+import Head from '../components/Head.astro';
+import '../styles/global.css';
+
+interface Props {
+	title: string;
+	description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<html lang="en">
+	<head>
+		<Head title={title} description={description} />
+	</head>
+	<body>
+		<a class="skip-link" href="#main">Skip to content</a>
+		<!-- Nav/Footer land here in Phase 2 -->
+		<main id="main">
+			<slot />
+		</main>
+	</body>
+</html>
+
+<style>
+	.skip-link {
+		position: absolute;
+		top: var(--space-2);
+		left: var(--space-2);
+		transform: translateY(-200%);
+		background: var(--surface-2);
+		color: var(--green-ink);
+		padding: var(--space-2) var(--space-4);
+		border-radius: var(--radius);
+		font-family: var(--font-sans);
+		font-size: var(--text-sm);
+		text-decoration: none;
+		z-index: 100;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.skip-link {
+			transition: transform 0.15s ease;
+		}
+	}
+
+	.skip-link:focus-visible {
+		transform: translateY(0);
+		outline: 2px solid var(--green-ink);
+		outline-offset: 2px;
+	}
+</style>
