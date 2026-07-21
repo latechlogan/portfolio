@@ -199,7 +199,7 @@ Use the vanilla **Motion** library (motion.dev) — framework-agnostic, tiny, no
 4. **Home sections** — `ProjectCard` + Projects section + Contact.
 5. **About** — `Bubble` component + the conversational thread + scroll-reveal (Motion).
 6. **Case study** — `work` collection + `[slug].astro` + port `provider-directory-search.md`.
-7. **Polish** — SEO/OG, sitemap, accessibility pass, reduced-motion + dark-mode QA.
+7. **Polish** — SEO/OG, sitemap, accessibility pass, reduced-motion + dark-mode QA. Swap About's `motion` import to the `motion/mini` entrypoint — the full import bundles ~64K (uncompressed) for one stagger reveal; mini cuts it to a few K but changes spring syntax, so do it as a deliberate task with a re-test of the reveal.
 8. **Ship** — Netlify deploy + CI + branch protection.
 
 Final copy for every section lives in the vault's `Final/` folder (`Home.md`, `Provider Directory Search.md`).

@@ -1,0 +1,113 @@
+---
+interface Props {
+	variant: 'question' | 'answer';
+}
+
+const { variant } = Astro.props;
+---
+
+{
+	variant === 'question' ? (
+		<div class="row row-question">
+			<div class="bubble bubble-question">
+				<slot />
+			</div>
+		</div>
+	) : (
+		<div class="row row-answer">
+			<div class="bubble bubble-answer">
+				<slot />
+			</div>
+			<span class="monogram" aria-hidden="true">
+				LB
+			</span>
+		</div>
+	)
+}
+
+<style>
+	.row {
+		display: flex;
+		align-items: flex-end;
+		gap: var(--space-2);
+	}
+
+	.row-question {
+		justify-content: flex-start;
+	}
+
+	.row-answer {
+		justify-content: flex-end;
+	}
+
+	.bubble {
+		max-width: 85%;
+		border-radius: var(--radius-bubble);
+		padding: var(--space-4) var(--space-6);
+	}
+
+	/* Recessed, serif italic — the questions are "the voice". */
+	.bubble-question {
+		background: var(--surface-1);
+		font-family: var(--font-serif);
+		font-style: italic;
+		font-size: var(--text-lg);
+		line-height: var(--leading-snug);
+		border-bottom-left-radius: var(--radius);
+	}
+
+	/* White card, sans body — the opposite corner squares off, chat-style. */
+	.bubble-answer {
+		background: var(--surface-2);
+		border: 1px solid var(--border);
+		font-size: var(--text-base);
+		line-height: var(--leading-normal);
+		border-bottom-right-radius: var(--radius);
+	}
+
+	.bubble-answer :global(p) {
+		margin: 0;
+	}
+
+	.bubble-answer :global(p + p) {
+		margin-top: var(--space-3);
+	}
+
+	.bubble-answer :global(em) {
+		font-family: var(--font-serif);
+		font-style: italic;
+	}
+
+	/* Tech-term chips — same recipe as the Hero tagline's mono chip. */
+	.bubble-answer :global(code) {
+		font-family: var(--font-mono);
+		font-size: 0.85em;
+		background: var(--green-tint);
+		color: var(--green-ink);
+		padding: var(--space-1) var(--space-2);
+		border-radius: var(--radius);
+		white-space: nowrap;
+	}
+
+	/* "LB" monogram — decorative only, never a stand-in for accessible text. */
+	.monogram {
+		flex: none;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 32px;
+		height: 32px;
+		border-radius: 50%;
+		background: var(--green-fill);
+		color: var(--text-primary);
+		font-family: var(--font-sans);
+		font-size: var(--text-xs);
+		font-weight: 500;
+	}
+
+	/* --green-fill stays constant across themes, so keep the "LB" dark in
+	   both — in dark mode --text-primary flips light and would wash out. */
+	:global([data-theme='dark']) .monogram {
+		color: var(--bg);
+	}
+</style>
