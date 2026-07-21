@@ -1,0 +1,81 @@
+---
+---
+
+<section class="hero" aria-label="Intro">
+	<h1>Design engineer</h1>
+	<p class="tagline">
+		Happiest in the space between <em>make it beautiful</em> and <code>make it work</code>
+	</p>
+	<p class="support">
+		Graphic-design roots and 7+ years building accessible, interactive experiences for the
+		web — with an eye for the details most people scroll right past.
+	</p>
+	<a class="cta" href="#projects">See what I've made</a>
+</section>
+
+<style>
+	.hero {
+		max-width: calc(var(--measure) + var(--space-4) * 2);
+		margin-inline: auto;
+		padding: var(--space-16) var(--space-4);
+	}
+
+	h1 {
+		font-size: var(--text-display);
+		line-height: var(--leading-tight);
+		letter-spacing: var(--tracking-tight);
+		font-weight: 500;
+		margin: 0 0 var(--space-6);
+	}
+
+	.tagline {
+		font-size: var(--text-lg);
+		line-height: var(--leading-normal);
+		margin: 0 0 var(--space-4);
+	}
+
+	.tagline em {
+		font-family: var(--font-serif);
+		font-style: italic;
+	}
+
+	.tagline code {
+		font-family: var(--font-mono);
+		font-size: 0.85em;
+		line-height: 1;
+		background: var(--green-tint);
+		color: var(--green-ink);
+		padding: var(--space-1) var(--space-2);
+		border-radius: var(--radius);
+		white-space: nowrap;
+	}
+
+	.support {
+		font-size: var(--text-base);
+		line-height: var(--leading-normal);
+		color: var(--text-secondary);
+		max-width: var(--measure);
+		margin: 0 0 var(--space-8);
+	}
+
+	.cta {
+		display: inline-block;
+		background: var(--green-ink);
+		color: var(--bg);
+		font-size: var(--text-base);
+		font-weight: 500;
+		padding: var(--space-3) var(--space-6);
+		border-radius: var(--radius);
+		text-decoration: none;
+	}
+
+	.cta:hover {
+		opacity: 0.85;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.cta {
+			transition: opacity 0.15s ease;
+		}
+	}
+</style>
