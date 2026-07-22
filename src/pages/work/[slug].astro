@@ -30,6 +30,21 @@ const { Content } = await render(entry);
   </article>
 </BaseLayout>
 
+<script>
+  // Autoplay is a JS-only enhancement: without this script (or with reduced
+  // motion preferred) the demo stays a static poster with native controls.
+  const prefersReducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!prefersReducedMotion) {
+    document
+      .querySelectorAll<HTMLVideoElement>('video[data-autoplay]')
+      .forEach((video) => {
+        video.muted = true;
+        video.play().catch(() => {});
+      });
+  }
+</script>
+
 <style>
   .section {
     max-width: calc(var(--measure) + var(--space-4) * 2);
@@ -76,6 +91,15 @@ const { Content } = await render(entry);
     height: auto;
     border-radius: var(--radius);
     border: 1px solid var(--border);
+  }
+
+  .prose :global(video) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    margin-block: var(--space-8);
   }
 
   .prose :global(p:has(> img)) {
