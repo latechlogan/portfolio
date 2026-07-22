@@ -20,12 +20,16 @@ const { title, description } = Astro.props;
 			try {
 				stored = localStorage.getItem('theme');
 			} catch (e) {}
-			var theme =
-				stored === 'light' || stored === 'dark'
-					? stored
-					: matchMedia('(prefers-color-scheme: dark)').matches
-						? 'dark'
-						: 'light';
+			var theme = 'light';
+			if (stored === 'light' || stored === 'dark') {
+				theme = stored;
+			} else {
+				try {
+					if (matchMedia('(prefers-color-scheme: dark)').matches) {
+						theme = 'dark';
+					}
+				} catch (e) {}
+			}
 			document.documentElement.dataset.theme = theme;
 		</script>
 	</head>

@@ -78,7 +78,9 @@ const { title, tagline, description, links } = Astro.props;
   .sep {
     display: inline-block;
     margin: 0 var(--space-2);
-    color: var(--text-muted);
+    /* --text-secondary, not --text-muted: on dark --surface-2 (which is
+       lighter than the dark --bg) muted lands at 3.98:1 — under AA. */
+    color: var(--text-secondary);
   }
 
   /* Decorative hover wash — very subtle, per the accent map's "project-card hover wash". */

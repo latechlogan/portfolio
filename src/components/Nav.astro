@@ -10,8 +10,10 @@ const LINKEDIN_URL = 'https://www.linkedin.com/in/logan-baugh/';
 	<nav aria-label="Main">
 		<a class="brand" href="/">Logan Baugh</a>
 		<ul>
-			<li><a href="#about">About</a></li>
-			<li><a href="#projects">Projects</a></li>
+			<!-- Path-qualified so these still resolve from /work/* pages; on the
+			     home page the browser treats them as plain in-page fragment jumps. -->
+			<li><a href="/#about">About</a></li>
+			<li><a href="/#projects">Projects</a></li>
 			<li><a href="/JonathanLoganBaugh_DesignEngineer.pdf" target="_blank" rel="noopener">Resume</a></li>
 			<!-- Visual Design link parked — not a path being pursued right now.
 			<li><a href="/Baugh_Portfolio.pdf" target="_blank" rel="noopener">Visual Design</a></li>
