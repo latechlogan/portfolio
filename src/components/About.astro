@@ -1,175 +1,182 @@
 ---
-import Bubble from './Bubble.astro';
+import Bubble from "./Bubble.astro";
 ---
 
 <section id="about" class="about" aria-labelledby="about-heading">
-	<h2 id="about-heading">About</h2>
+  <h2 id="about-heading">About</h2>
 
-	<div class="thread">
-		<Bubble variant="question">So, what's your story?</Bubble>
-		<Bubble variant="answer">
-			<p>
-				I started in graphic design, fell for the web, and learned to code so
-				I could build the things I was designing instead of handing them off.
-				Seven-plus years later I still do both — that overlap is the whole
-				point.
-			</p>
-		</Bubble>
+  <div class="thread">
+    <Bubble variant="question">So, what's your story?</Bubble>
+    <Bubble variant="answer">
+      <p>
+        I started in graphic design, fell for the web, and learned to code so I
+        could build the things I was designing instead of handing them off.
+        Seven-plus years later I still do both — that overlap is the whole
+        point.
+      </p>
+    </Bubble>
 
-		<Bubble variant="question">Where'd you spend those years?</Bubble>
-		<Bubble variant="answer">
-			<p>
-				Healthcare, mostly. The kind of work where clarity isn't a style
-				choice — real people need to find a doctor or make sense of their
-				coverage, and getting it wrong has real consequences.
-			</p>
-			<p>
-				It's where I learned accessibility for real: audited,
-				WCAG-compliant work, not a checkbox. "Clean and clear" isn't the safe
-				option to me — it's the job.
-			</p>
-		</Bubble>
+    <Bubble variant="question">Where'd you spend those years?</Bubble>
+    <Bubble variant="answer">
+      <p>
+        Healthcare, mostly. The kind of work where clarity isn't a style choice
+        — real people need to find a doctor or make sense of their coverage, and
+        getting it wrong has real consequences.
+      </p>
+      <p>
+        It's where I learned accessibility for real: audited, WCAG-compliant
+        work, not a checkbox. "Clean and clear" isn't the safe option to me —
+        it's the job.
+      </p>
+    </Bubble>
 
-		<Bubble variant="question">And lately?</Bubble>
-		<Bubble variant="answer">
-			<p>
-				I've been building end to end. Most recently a voice-controlled math
-				game for my kids — shipped in <code>React</code> and
-				<code>TypeScript</code>, with a custom native plugin so it runs
-				on-device and keeps their audio private.
-			</p>
-			<p>
-				I care most about the seam where design meets code: making things
-				that are beautiful <em>and</em> buildable, and sweating the small
-				interactions most people feel but never notice.
-			</p>
-		</Bubble>
+    <Bubble variant="question">And lately?</Bubble>
+    <Bubble variant="answer">
+      <p>
+        I've been building end to end. Most recently a voice-controlled math
+        game for my kids — shipped in <code>React</code> and
+        <code>TypeScript</code>, with a custom native plugin so it runs
+        on-device and keeps their audio private.
+      </p>
+      <p>
+        I care most about the seam where design meets code: making things that
+        are beautiful <em>and</em> buildable, and sweating the small interactions
+        most people feel but never notice.
+      </p>
+    </Bubble>
 
-		<Bubble variant="question">What are you after?</Bubble>
-		<Bubble variant="answer">
-			<p>
-				A team with a product worth caring about — where design and
-				engineering aren't at odds, and the details matter to someone
-				besides me.
-			</p>
-		</Bubble>
+    <Bubble variant="question">What are you after?</Bubble>
+    <Bubble variant="answer">
+      <p>
+        A team with a product worth caring about — where design and engineering
+        aren't at odds, and the details matter to someone besides me.
+      </p>
+    </Bubble>
 
-		<div class="typing-row" aria-hidden="true">
-			<div class="typing-bubble">
-				<span class="dot"></span>
-				<span class="dot"></span>
-				<span class="dot"></span>
-			</div>
-		</div>
-	</div>
+    <div class="typing-row" aria-hidden="true">
+      <div class="typing-bubble">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+    </div>
+  </div>
 </section>
 
 <script>
-	import { animate, inView, stagger } from 'motion';
+  import { inView, spring } from "motion";
+  import { animate } from "motion/mini";
 
-	// Progressive enhancement: with no JS, or with reduced motion, every
-	// bubble is already fully visible via plain CSS — nothing above this
-	// point depends on the script running.
-	const prefersReducedMotion = matchMedia(
-		'(prefers-reduced-motion: reduce)',
-	).matches;
+  // Progressive enhancement: with no JS, or with reduced motion, every
+  // bubble is already fully visible via plain CSS — nothing above this
+  // point depends on the script running.
+  const prefersReducedMotion = matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
 
-	if (!prefersReducedMotion) {
-		const section = document.querySelector('#about');
-		const thread = section?.querySelector('.thread');
-		const items = thread ? Array.from(thread.children) : [];
+  if (!prefersReducedMotion) {
+    const section = document.querySelector("#about");
+    const thread = section?.querySelector(".thread");
+    const items = thread ? Array.from(thread.children) : [];
 
-		if (section && items.length) {
-			// Set the hidden starting state from JS, immediately before wiring
-			// up the reveal — CSS never hides this content on its own.
-			items.forEach((item) => {
-				const el = item as HTMLElement;
-				el.style.opacity = '0';
-				el.style.transform = 'translateY(12px)';
-			});
+    if (section && items.length) {
+      // Set the hidden starting state from JS, immediately before wiring
+      // up the reveal — CSS never hides this content on its own.
+      items.forEach((item) => {
+        const el = item as HTMLElement;
+        el.style.opacity = "0";
+        el.style.transform = "translateY(12px)";
+      });
 
-			inView(section, () => {
-				animate(
-					items,
-					{ opacity: 1, transform: 'translateY(0px)' },
-					{
-						type: 'spring',
-						stiffness: 260,
-						damping: 26,
-						delay: stagger(0.08),
-					},
-				);
-			});
-		}
-	}
+      // Each item reveals on its own as it crosses into view, rather than
+      // staggering the whole thread off a single section-level trigger —
+      // so items below the fold animate when the user actually reaches
+      // them instead of firing off-screen. The `-12%` margin means an
+      // item has to be a bit past the bottom edge before it counts as
+      // "in view", not the instant its top pixel appears.
+      items.forEach((item) => {
+        inView(
+          item,
+          () => {
+            animate(
+              item,
+              { opacity: 1, transform: "translateY(0px)" },
+              { type: spring, stiffness: 260, damping: 26 },
+            );
+          },
+          { margin: "0px 0px -12% 0px" },
+        );
+      });
+    }
+  }
 </script>
 
 <style>
-	.about {
-		max-width: calc(var(--measure) + var(--space-4) * 2);
-		margin-inline: auto;
-		padding: var(--space-16) var(--space-4);
-	}
+  .about {
+    max-width: calc(var(--measure) + var(--space-4) * 2);
+    margin-inline: auto;
+    padding: var(--space-16) var(--space-4);
+  }
 
-	h2 {
-		font-size: var(--text-xl);
-		font-weight: 500;
-		margin: 0 0 var(--space-8);
-	}
+  h2 {
+    font-size: var(--text-xl);
+    font-weight: 500;
+    margin: 0 0 var(--space-8);
+  }
 
-	.thread {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-6);
-	}
+  .thread {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
 
-	/* Typing indicator — pure decoration, mirrors a question bubble's shape. */
-	.typing-row {
-		display: flex;
-		justify-content: flex-start;
-	}
+  /* Typing indicator — pure decoration, mirrors a question bubble's shape. */
+  .typing-row {
+    display: flex;
+    justify-content: flex-start;
+  }
 
-	.typing-bubble {
-		display: inline-flex;
-		align-items: center;
-		gap: var(--space-1);
-		background: var(--surface-1);
-		border-radius: var(--radius-bubble);
-		border-bottom-left-radius: var(--radius);
-		padding: var(--space-3) var(--space-4);
-	}
+  .typing-bubble {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    background: var(--surface-1);
+    border-radius: var(--radius-bubble);
+    border-bottom-left-radius: var(--radius);
+    padding: var(--space-3) var(--space-4);
+  }
 
-	.dot {
-		width: 6px;
-		height: 6px;
-		border-radius: 50%;
-		background: var(--green-fill);
-	}
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--text-muted);
+  }
 
-	@media (prefers-reduced-motion: no-preference) {
-		.dot {
-			animation: typing-pulse 1.2s ease-in-out infinite;
-		}
+  @media (prefers-reduced-motion: no-preference) {
+    .dot {
+      animation: typing-pulse 1.2s ease-in-out infinite;
+    }
 
-		.dot:nth-child(2) {
-			animation-delay: 0.15s;
-		}
+    .dot:nth-child(2) {
+      animation-delay: 0.15s;
+    }
 
-		.dot:nth-child(3) {
-			animation-delay: 0.3s;
-		}
+    .dot:nth-child(3) {
+      animation-delay: 0.3s;
+    }
 
-		@keyframes typing-pulse {
-			0%,
-			60%,
-			100% {
-				opacity: 0.3;
-				transform: translateY(0);
-			}
-			30% {
-				opacity: 1;
-				transform: translateY(-2px);
-			}
-		}
-	}
+    @keyframes typing-pulse {
+      0%,
+      60%,
+      100% {
+        opacity: 0.3;
+        transform: translateY(0);
+      }
+      30% {
+        opacity: 1;
+        transform: translateY(-2px);
+      }
+    }
+  }
 </style>

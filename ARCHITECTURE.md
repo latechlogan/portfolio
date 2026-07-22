@@ -169,7 +169,7 @@ Astro 5 content layer. One collection now, one stubbed for later.
 
 Use the vanilla **Motion** library (motion.dev) — framework-agnostic, tiny, no React. Same project/engine as Framer Motion, so concepts transfer. CSS handles the simplest states.
 
-- **Scroll-reveal** — Motion's `inView()` + `animate()` (spring) for About bubbles (staggered) and section entrances.
+- **Scroll-reveal** — Motion's `inView()` + `animate()` (spring) for About bubbles: each bubble reveals individually as it crosses a spatial threshold (`-12%` viewport margin), so scroll position provides the stagger. `animate` comes from `motion/mini`; `inView`/`spring` from `motion` (mini doesn't export them; tree-shaking keeps the chunk ~12K, ~5K gzipped).
 - **Typing indicator** — CSS keyframes on the dots.
 - **Hover / press / focus states** — pure CSS transitions.
 - **`prefers-reduced-motion: reduce`** — gate all motion; content appears instantly.
@@ -199,7 +199,7 @@ Use the vanilla **Motion** library (motion.dev) — framework-agnostic, tiny, no
 4. **Home sections** — `ProjectCard` + Projects section + Contact.
 5. **About** — `Bubble` component + the conversational thread + scroll-reveal (Motion).
 6. **Case study** — `work` collection + `[slug].astro` + port `provider-directory-search.md`.
-7. **Polish** — SEO/OG, sitemap, accessibility pass, reduced-motion + dark-mode QA. Revisit the case study's demo animation (`provider-search.gif`, built as animated WebP): it autoplays, loops indefinitely, and ignores `prefers-reduced-motion` — swap for a muted looping `<video>` with a pause affordance, or serve a static frame to reduced-motion users. Swap About's `motion` import to the `motion/mini` entrypoint — the full import bundles ~64K (uncompressed) for one stagger reveal; mini cuts it to a few K but changes spring syntax, so do it as a deliberate task with a re-test of the reveal.
+7. **Polish** — SEO/OG, sitemap, accessibility pass, reduced-motion + dark-mode QA. Revisit the case study's demo animation (`provider-search.gif`, built as animated WebP): it autoplays, loops indefinitely, and ignores `prefers-reduced-motion` — swap for a muted looping `<video>` with a pause affordance, or serve a static frame to reduced-motion users. ~~Swap About's `motion` import to the `motion/mini` entrypoint~~ — done (7b): per-bubble reveal + mini swap cut the chunk 62K → 11.7K (4.7K gzipped).
 8. **Ship** — Netlify deploy + CI + branch protection.
 
 Final copy for every section lives in the vault's `Final/` folder (`Home.md`, `Provider Directory Search.md`).
