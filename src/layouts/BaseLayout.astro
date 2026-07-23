@@ -15,6 +15,9 @@ const { title, description } = Astro.props;
 <html lang="en">
 	<head>
 		<Head title={title} description={description} />
+		{import.meta.env.PROD && (
+			<script is:inline defer src="https://cloud.umami.is/script.js" data-website-id="209daf26-afd5-4ad8-8a14-6da27545ab05"></script>
+		)}
 		<script is:inline>
 			var stored = null;
 			try {
