@@ -1,6 +1,11 @@
 # Portfolio Site — Architecture
 
-A personal portfolio for a **Design Engineer**. Two content surfaces (a single-page home + one internal case study), built for craft, speed, and accessibility. Drop this in the repo root as `ARCHITECTURE.md` (or fold into `CLAUDE.md`).
+A personal portfolio for a **Design Engineer**. Two content surfaces (a single-page home + one internal case study), built for craft, speed, and accessibility.
+
+**Status: v1 shipped.** All eight build phases are complete and the site is live at
+[loganbaugh.com](https://loganbaugh.com). This document is no longer a build plan — it's the
+reference for what exists and why, plus the backlog at the bottom. The design system below stays
+LOCKED; changes to tokens, fonts, or the color rules are deliberate decisions, not drive-by edits.
 
 ## Principles
 
@@ -46,10 +51,18 @@ src/
     projects/           # project images (optimized via astro:assets <Image/>)
   content.config.ts     # content collection schemas (Astro 5 content layer)
 public/
-  Baugh_Resume.pdf
-  Baugh_Portfolio.pdf   # visual design PDF
+  JonathanLoganBaugh_DesignEngineer.pdf   # resume (linked from Nav)
+  media/
+    provider-search-demo.mp4              # case study demo (replaced the GIF)
+    provider-search-poster.jpg            # poster frame / reduced-motion still
   favicon.svg
+  favicon.ico
   og-image.png
+  robots.txt
+astro.config.mjs        # site URL + @astrojs/sitemap
+netlify.toml            # build command, publish dir, pinned NODE_VERSION
+.nvmrc                  # 22.12.0 — CI reads this via node-version-file
+.github/workflows/ci.yml # npm ci -> astro check -> astro build on PR + push to main
 ```
 
 ## Design system — LOCKED
@@ -145,7 +158,7 @@ Hierarchy is driven by **weight + line-height**, not size alone. Keep to two wei
 
 - **BaseLayout** — the shell. Props: `title`, `description`. Renders `Head`, `Nav`, `<slot/>`, `Footer`. Inlines a tiny theme-init script in `<head>` (set `data-theme` before paint to avoid a flash).
 - **Head** — SEO/meta, OG tags, title template (`%s · Logan Baugh`), canonical URL.
-- **Nav** — links: About, Projects, Resume, Visual Design, GitHub, LinkedIn + `ThemeToggle`.
+- **Nav** — links: About, Projects, Resume, GitHub, LinkedIn + `ThemeToggle`.
 - **ThemeToggle** — button toggling `[data-theme]`, persisted to `localStorage`, respects `prefers-color-scheme` on first visit.
 - **Hero** — display headline "Design engineer" + serif/mono tagline (`make it beautiful` = serif span, `make it work` = mono chip on `--green-tint`) + supporting line + CTA.
 - **About** — the conversational thread; composes `Bubble` components; owns the scroll-reveal.
@@ -167,14 +180,14 @@ Astro 5 content layer. One collection now, one stubbed for later.
 
 ## Motion
 
-Use the vanilla **Motion** library (motion.dev) — framework-agnostic, tiny, no React. Same project/engine as Framer Motion, so concepts transfer. CSS handles the simplest states.
+Use the vanilla **Motion** library (motion.dev) — framework-agnostic, tiny, no React. CSS handles the simplest states.
 
 - **Scroll-reveal** — Motion's `inView()` + `animate()` (spring) for About bubbles: each bubble reveals individually as it crosses a spatial threshold (`-12%` viewport margin), so scroll position provides the stagger. `animate` comes from `motion/mini`; `inView`/`spring` from `motion` (mini doesn't export them; tree-shaking keeps the chunk ~12K, ~5K gzipped).
 - **Typing indicator** — CSS keyframes on the dots.
 - **Hover / press / focus states** — pure CSS transitions.
 - **`prefers-reduced-motion: reduce`** — gate all motion; content appears instantly.
 
-**Islands:** not needed for v1 — nothing here requires framework-level reactivity, and vanilla Motion covers animation. The "ship pure HTML/CSS" principle is a *default, not a ban.* The one thing that would justify a React island later: a deliberate interactive showcase piece (e.g., a live component playground) — which would also be the right home for **Framer Motion (React)**. Note: this build does NOT back the "Framer Motion" resume keyword; that still needs a React home (Zapmath's next phase, or a dedicated interactive piece).
+**Islands:** none. Nothing here requires framework-level reactivity, and vanilla Motion covers animation. The "ship pure HTML/CSS" principle is a *default, not a ban* — but adding a UI framework is a decision to make deliberately, against a specific piece that needs it, not a direction this build is heading.
 
 ## Accessibility (non-negotiable — it's the differentiator)
 
@@ -191,15 +204,34 @@ Use the vanilla **Motion** library (motion.dev) — framework-agnostic, tiny, no
 - OG image + Twitter card; canonical URLs.
 - `@astrojs/sitemap` integration; `robots.txt` in `public/`.
 
-## Suggested build order (SDD-lite phases)
+## Build order — all phases complete
 
-1. **Foundation** — scaffold via `npm create astro@latest` (minimal template, TS strict). Add tokens, fonts, reset, `BaseLayout`. Get the design system + shell rendering before any content.
-2. **Chrome** — `Nav`, `Footer`, `ThemeToggle` (incl. no-flash init + dark mode).
-3. **Hero** — nail the serif/mono treatment; this sets the whole visual tone.
-4. **Home sections** — `ProjectCard` + Projects section + Contact.
-5. **About** — `Bubble` component + the conversational thread + scroll-reveal (Motion).
-6. **Case study** — `work` collection + `[slug].astro` + port `provider-directory-search.md`.
-7. **Polish** — SEO/OG, sitemap, accessibility pass, reduced-motion + dark-mode QA. Revisit the case study's demo animation (`provider-search.gif`, built as animated WebP): it autoplays, loops indefinitely, and ignores `prefers-reduced-motion` — swap for a muted looping `<video>` with a pause affordance, or serve a static frame to reduced-motion users. ~~Swap About's `motion` import to the `motion/mini` entrypoint~~ — done (7b): per-bubble reveal + mini swap cut the chunk 62K → 11.7K (4.7K gzipped).
-8. **Ship** — Netlify deploy + CI + branch protection.
+The original SDD-lite plan, kept as the record of how v1 came together. Each phase maps to a commit.
+
+1. ✅ **Foundation** — scaffolded via `npm create astro@latest` (minimal template, TS strict); tokens, fonts, reset, `BaseLayout`.
+2. ✅ **Chrome** — `Nav`, `Footer`, `ThemeToggle` (no-flash init + dark mode).
+3. ✅ **Hero** — display headline + the serif/mono tagline motif.
+4. ✅ **Home sections** — `ProjectCard`, Projects, Contact.
+5. ✅ **About** — `Bubble` + the conversational thread + scroll-reveal.
+6. ✅ **Case study** — `work` collection + `[slug].astro` + `provider-directory-search.md`.
+7. ✅ **Polish** — SEO/OG, sitemap, `robots.txt`, accessibility pass, reduced-motion + dark-mode QA.
+   - 7a: the demo GIF became a muted looping `<video>` with `controls`, a poster frame, and
+     `preload="metadata"`; autoplay is JS-driven off `data-autoplay` so reduced-motion users get
+     the poster and the controls instead.
+   - 7b: per-bubble reveal + swapping About's `animate` import to `motion/mini` cut the JS chunk
+     62K → 11.7K (4.7K gzipped).
+8. ✅ **Ship** — Netlify (`netlify.toml`, Node pinned to 22.12.0), GitHub Actions CI
+   (`astro check` + `astro build` on every PR and push to `main`), and a `main` branch ruleset
+   requiring PRs. Live at [loganbaugh.com](https://loganbaugh.com).
 
 Final copy for every section lives in the vault's `Final/` folder (`Home.md`, `Provider Directory Search.md`).
+
+## Backlog — deliberately not built
+
+Nothing here is a gap in v1; each is a decision to revisit, not an unfinished task.
+
+- **`writing` collection** — intentionally left as a stub. The intent is documented above, but
+  nothing exists in code: no `writing` entry in `content.config.ts`, no `src/content/writing/`, no
+  route. Staying stubbed until there's something worth publishing; wire up all three then.
+- **Coral** — `--coral` is defined in the token set but not yet spent anywhere. It's reserved for a
+  single rare warm pop; leaving it unused is a valid outcome.
