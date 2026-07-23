@@ -20,6 +20,7 @@ LOCKED; changes to tokens, fonts, or the color rules are deliberate decisions, n
 - **Vanilla JS** in `<script>` tags for the two interactive bits (theme toggle, scroll-reveal). No islands (see below).
 - **Motion:** the vanilla **Motion** library (motion.dev) — framework-agnostic, tiny.
 - **Fonts self-hosted** via Fontsource (no external font requests — faster + privacy-clean).
+- **Analytics:** Umami Cloud — cookie-less, no consent banner needed. Script tag lives in `BaseLayout`, gated to `import.meta.env.PROD` so dev sessions aren't tracked.
 - **Deploy:** Netlify (static), same pipeline as Fox Family — GitHub -> Netlify, deploy previews as staging, branch protection on `main`.
 
 ## Folder structure
@@ -156,7 +157,7 @@ Hierarchy is driven by **weight + line-height**, not size alone. Keep to two wei
 
 ## Components
 
-- **BaseLayout** — the shell. Props: `title`, `description`. Renders `Head`, `Nav`, `<slot/>`, `Footer`. Inlines a tiny theme-init script in `<head>` (set `data-theme` before paint to avoid a flash).
+- **BaseLayout** — the shell. Props: `title`, `description`. Renders `Head`, `Nav`, `<slot/>`, `Footer`. Inlines a tiny theme-init script in `<head>` (set `data-theme` before paint to avoid a flash), and the Umami analytics script tag when `PROD`.
 - **Head** — SEO/meta, OG tags, title template (`%s · Logan Baugh`), canonical URL.
 - **Nav** — links: About, Projects, Resume, GitHub, LinkedIn + `ThemeToggle`.
 - **ThemeToggle** — button toggling `[data-theme]`, persisted to `localStorage`, respects `prefers-color-scheme` on first visit.
