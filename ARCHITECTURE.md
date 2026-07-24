@@ -52,7 +52,7 @@ src/
     projects/           # project images (optimized via astro:assets <Image/>)
   content.config.ts     # content collection schemas (Astro 5 content layer)
 public/
-  JonathanLoganBaugh_DesignEngineer.pdf   # resume (linked from Nav)
+  JonathanLoganBaugh_Resume.pdf           # resume (linked from Nav)
   media/
     provider-search-demo.mp4              # case study demo (replaced the GIF)
     provider-search-poster.jpg            # poster frame / reduced-motion still
