@@ -83,9 +83,14 @@
 		color: var(--text-primary);
 	}
 
+	/* Press feedback: a small squash reads as a physical click. */
+	.theme-toggle:active {
+		transform: scale(0.92);
+	}
+
 	@media (prefers-reduced-motion: no-preference) {
 		.theme-toggle {
-			transition: color 0.15s ease;
+			transition: color 0.15s ease, transform 0.1s ease;
 		}
 	}
 

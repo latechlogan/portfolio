@@ -32,7 +32,9 @@ const LINKEDIN_URL = 'https://www.linkedin.com/in/logan-baugh/';
 		flex-wrap: wrap;
 		align-items: center;
 		gap: var(--space-4);
-		max-width: 72rem;
+		/* Same column as every section (see .section in index.astro) so the
+		   brand lines up with the hero headline instead of floating left of it. */
+		max-width: calc(var(--measure) + var(--space-4) * 2);
 		margin-inline: auto;
 		padding: var(--space-4);
 	}

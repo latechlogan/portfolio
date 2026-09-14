@@ -185,7 +185,7 @@ Use the vanilla **Motion** library (motion.dev) — framework-agnostic, tiny, no
 
 - **Scroll-reveal** — Motion's `inView()` + `animate()` (spring) for About bubbles: each bubble reveals individually as it crosses a spatial threshold (`-12%` viewport margin), so scroll position provides the stagger. `animate` comes from `motion/mini`; `inView`/`spring` from `motion` (mini doesn't export them; tree-shaking keeps the chunk ~12K, ~5K gzipped).
 - **Typing indicator** — CSS keyframes on the dots.
-- **Hover / press / focus states** — pure CSS transitions.
+- **Hover / press / focus states** — pure CSS transitions. Links rest on a 40% underline that fills to full on hover; the theme toggle squashes slightly on press; in-page anchors scroll smoothly.
 - **`prefers-reduced-motion: reduce`** — gate all motion; content appears instantly.
 
 **Islands:** none. Nothing here requires framework-level reactivity, and vanilla Motion covers animation. The "ship pure HTML/CSS" principle is a *default, not a ban* — but adding a UI framework is a decision to make deliberately, against a specific piece that needs it, not a direction this build is heading.
