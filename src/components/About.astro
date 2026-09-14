@@ -52,14 +52,6 @@ import Bubble from "./Bubble.astro";
         aren't at odds, and the details matter to someone besides me.
       </p>
     </Bubble>
-
-    <div class="typing-row" aria-hidden="true">
-      <div class="typing-bubble">
-        <span class="dot"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -77,32 +69,122 @@ import Bubble from "./Bubble.astro";
   if (!prefersReducedMotion) {
     const section = document.querySelector("#about");
     const thread = section?.querySelector(".thread");
-    const items = thread ? Array.from(thread.children) : [];
+    const items = thread
+      ? (Array.from(thread.children) as HTMLElement[])
+      : [];
 
     if (section && items.length) {
+      const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+      const pop = { type: spring, stiffness: 260, damping: 26 };
+
+      // What actually fades in. For an answer row it's the card + monogram,
+      // not the row itself — the typing overlay lives in the row and has to
+      // stay visible while the answer is still "being typed".
+      const revealTargets = (item: HTMLElement) => {
+        const typing = item.querySelector<HTMLElement>(".typing-slot");
+        return typing
+          ? Array.from(item.querySelectorAll<HTMLElement>(".bubble, .monogram"))
+          : [item];
+      };
+
       // Set the hidden starting state from JS, immediately before wiring
       // up the reveal — CSS never hides this content on its own.
       items.forEach((item) => {
-        const el = item as HTMLElement;
-        el.style.opacity = "0";
-        el.style.transform = "translateY(12px)";
+        revealTargets(item).forEach((el) => {
+          el.style.opacity = "0";
+          el.style.transform = "translateY(12px)";
+        });
       });
 
-      // Each item reveals on its own as it crosses into view, rather than
-      // staggering the whole thread off a single section-level trigger —
-      // so items below the fold animate when the user actually reaches
-      // them instead of firing off-screen. The `-12%` margin means an
-      // item has to be a bit past the bottom edge before it counts as
-      // "in view", not the instant its top pixel appears.
-      items.forEach((item) => {
+      // Plays one item. Questions just pop in. Answers first show the typing
+      // dots for a beat scaled to the answer's length (a long reply "takes
+      // longer to type"), then swap the dots for the card. Resolves once the
+      // item's reveal has started, so the next item can follow it.
+      const play = async (item: HTMLElement) => {
+        const typing = item.querySelector<HTMLElement>(".typing-slot");
+
+        if (typing) {
+          const chars = item.textContent?.trim().length ?? 0;
+          const hold = Math.min(1000, 400 + chars * 2.5);
+
+          await wait(150);
+          typing.hidden = false;
+          animate(
+            typing,
+            { opacity: [0, 1], transform: ["translateY(6px)", "translateY(0px)"] },
+            pop,
+          );
+          await wait(hold);
+          animate(typing, { opacity: 0 }, { duration: 0.2 }).finished.then(
+            () => {
+              typing.hidden = true;
+            },
+          );
+          // Let the dots start fading before the card arrives, so the swap
+          // reads as a hand-off rather than a pile-up.
+          await wait(100);
+        }
+
+        animate(
+          revealTargets(item),
+          { opacity: 1, transform: "translateY(0px)" },
+          pop,
+        );
+        await wait(120);
+      };
+
+      // Shows an item as-is, no choreography — for items the reader has
+      // already scrolled past without them ever crossing the viewport.
+      const showInstantly = (item: HTMLElement) => {
+        revealTargets(item).forEach((el) => {
+          el.style.opacity = "";
+          el.style.transform = "";
+        });
+      };
+
+      // A chat happens in order: an answer never lands before its question.
+      // inView tells us
+      // *which* items are on screen, but the browser delivers those
+      // callbacks in no particular order — so rather than playing items as
+      // they report in, we mark them ready and always release the lowest
+      // unplayed index first (a sequencer). `next` is the cursor.
+      const ready = new Set<number>();
+      let next = 0;
+      let running = false;
+
+      const run = async () => {
+        if (running) return;
+        running = true;
+
+        while (next < items.length) {
+          const item = items[next];
+
+          if (ready.has(next)) {
+            await play(item);
+            next++;
+          } else if (item.getBoundingClientRect().bottom <= 0) {
+            // Above the viewport and never seen: the reader jumped past it.
+            // Reveal it plainly so the thread reads whole if they scroll up.
+            showInstantly(item);
+            next++;
+          } else {
+            // Still below or entering — wait for its inView callback.
+            break;
+          }
+        }
+
+        running = false;
+      };
+
+      // The `-12%` margin means an item has to be a bit past the bottom
+      // edge before it counts as "in view", not the instant its top pixel
+      // appears.
+      items.forEach((item, i) => {
         inView(
           item,
           () => {
-            animate(
-              item,
-              { opacity: 1, transform: "translateY(0px)" },
-              { type: spring, stiffness: 260, damping: 26 },
-            );
+            ready.add(i);
+            run();
           },
           { margin: "0px 0px -12% 0px" },
         );
@@ -128,55 +210,5 @@ import Bubble from "./Bubble.astro";
     display: flex;
     flex-direction: column;
     gap: var(--space-6);
-  }
-
-  /* Typing indicator — pure decoration, mirrors a question bubble's shape. */
-  .typing-row {
-    display: flex;
-    justify-content: flex-start;
-  }
-
-  .typing-bubble {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-1);
-    background: var(--surface-1);
-    border-radius: var(--radius-bubble);
-    border-bottom-left-radius: var(--radius);
-    padding: var(--space-3) var(--space-4);
-  }
-
-  .dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--text-muted);
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .dot {
-      animation: typing-pulse 1.2s ease-in-out infinite;
-    }
-
-    .dot:nth-child(2) {
-      animation-delay: 0.15s;
-    }
-
-    .dot:nth-child(3) {
-      animation-delay: 0.3s;
-    }
-
-    @keyframes typing-pulse {
-      0%,
-      60%,
-      100% {
-        opacity: 0.3;
-        transform: translateY(0);
-      }
-      30% {
-        opacity: 1;
-        transform: translateY(-2px);
-      }
-    }
   }
 </style>

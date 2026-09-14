@@ -1,4 +1,6 @@
 ---
+import Typing from './Typing.astro';
+
 interface Props {
 	variant: 'question' | 'answer';
 }
@@ -21,12 +23,20 @@ const { variant } = Astro.props;
 			<span class="monogram" aria-hidden="true">
 				LB
 			</span>
+			<!-- Shown briefly by About's reveal script before the answer lands.
+			     `hidden` by default, so with no JS (or reduced motion) it never
+			     appears — the row's layout is reserved either way, so nothing
+			     shifts when it's swapped for the answer. -->
+			<span class="typing-slot" hidden>
+				<Typing />
+			</span>
 		</div>
 	)
 }
 
 <style>
 	.row {
+		position: relative; /* anchors .typing-slot */
 		display: flex;
 		align-items: flex-end;
 		gap: var(--space-2);
@@ -87,6 +97,16 @@ const { variant } = Astro.props;
 		padding: var(--space-1) var(--space-2);
 		border-radius: var(--radius);
 		white-space: nowrap;
+	}
+
+	/* Overlays the top-right of the reserved answer space — directly under
+	   the question, where a chat shows "typing…" — inset by the monogram +
+	   gap so its edge lines up with the card's. The card then lands in the
+	   same spot and grows downward from it. */
+	.typing-slot {
+		position: absolute;
+		right: calc(32px + var(--space-2));
+		top: 0;
 	}
 
 	/* "LB" monogram — decorative only, never a stand-in for accessible text. */

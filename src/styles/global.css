@@ -72,6 +72,24 @@ h1, h2, h3, h4, h5, h6 {
 a {
   color: var(--green-ink); /* functional accent — AA-safe in both themes */
   text-underline-offset: 0.15em;
+  /* Underline sits back at rest and fills to full strength on hover — a
+     quieter link than a solid underline everywhere, without inventing a color. */
+  text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+}
+
+a:hover {
+  text-decoration-color: currentColor;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a {
+    transition: text-decoration-color 0.15s ease, color 0.15s ease;
+  }
+
+  /* In-page links (#about, #projects) glide instead of jumping. */
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 :focus-visible {
