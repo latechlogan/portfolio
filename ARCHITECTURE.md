@@ -34,7 +34,8 @@ src/
     ThemeToggle.astro   # dark/light button (localStorage-backed)
     Hero.astro          # headline + serif/mono tagline + CTA
     About.astro         # the conversational thread
-    Bubble.astro        # one Q or A bubble (reusable)
+    Bubble.astro        # one Q or A bubble (reusable); answers carry a hidden typing overlay
+    Typing.astro        # the three-dot "typing…" indicator shown before each answer
     ProjectCard.astro   # one project entry (external or internal link)
   layouts/
     BaseLayout.astro    # html shell: Head, Nav, <slot/>, Footer, theme init
@@ -163,7 +164,8 @@ Hierarchy is driven by **weight + line-height**, not size alone. Keep to two wei
 - **ThemeToggle** — button toggling `[data-theme]`, persisted to `localStorage`, respects `prefers-color-scheme` on first visit.
 - **Hero** — display headline "Design engineer" + serif/mono tagline (`make it beautiful` = serif span, `make it work` = mono chip on `--green-tint`) + supporting line + CTA.
 - **About** — the conversational thread; composes `Bubble` components; owns the scroll-reveal.
-- **Bubble** — props: `variant: 'question' | 'answer'`. Question = `--surface-1`, serif italic; answer = `--surface-2`, sans, with mono chips for tech terms. Asymmetric corner per side.
+- **Bubble** — props: `variant: 'question' | 'answer'`. Question = `--surface-1`, serif italic; answer = `--surface-2`, sans, with mono chips for tech terms. Asymmetric corner per side. Answer rows also carry a `hidden` `.typing-slot` overlay (a `Typing`) pinned to the card's bottom-right corner; About's script shows it briefly before the card lands. Layout is reserved either way, so the swap causes no shift.
+- **Typing** — no props. The three-dot indicator, shaped like an answer card so it reads as "Logan is typing". Only used inside answer rows; the thread deliberately ends on the last answer rather than a dangling indicator, so nothing implies more is coming.
 - **ProjectCard** — props: `title`, `tagline`, `href`, `external?`. External (Zapmath, Fox Family) -> live site; internal (Provider Search) -> `/work/provider-directory-search`.
 - **Footer** — "Designed and built by hand · 2026"; "built by hand" links the repo.
 
@@ -183,8 +185,8 @@ Astro 5 content layer. One collection now, one stubbed for later.
 
 Use the vanilla **Motion** library (motion.dev) — framework-agnostic, tiny, no React. CSS handles the simplest states.
 
-- **Scroll-reveal** — Motion's `inView()` + `animate()` (spring) for About bubbles: each bubble reveals individually as it crosses a spatial threshold (`-12%` viewport margin), so scroll position provides the stagger. `animate` comes from `motion/mini`; `inView`/`spring` from `motion` (mini doesn't export them; tree-shaking keeps the chunk ~12K, ~5K gzipped).
-- **Typing indicator** — CSS keyframes on the dots.
+- **Conversation choreography** — About's thread plays like a chat. Motion's `inView()` marks each row ready as it crosses a spatial threshold (`-12%` viewport margin); a small sequencer then releases rows strictly in document order: a question pops in (spring), then the answer's typing dots appear for a beat scaled to the answer's length (400–1000ms), then the dots fade and the card lands. Rows the reader jumped past without them ever entering the viewport are shown plainly, so the thread reads whole on the way back up. **Why a sequencer:** Chrome delivers IntersectionObserver callbacks in no particular order, so "play on callback" let answers land before their questions. `animate` comes from `motion/mini`; `inView`/`spring` from `motion` (mini doesn't export them).
+- **Typing indicator** — CSS keyframes on the dots (`Typing.astro`).
 - **Hover / press / focus states** — pure CSS transitions. Links rest on a 40% underline that fills to full on hover; the theme toggle squashes slightly on press; in-page anchors scroll smoothly.
 - **`prefers-reduced-motion: reduce`** — gate all motion; content appears instantly.
 
