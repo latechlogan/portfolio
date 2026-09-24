@@ -227,7 +227,8 @@ The original SDD-lite plan, kept as the record of how v1 came together. Each pha
    (`astro check` + `astro build` on every PR and push to `main`), and a `main` branch ruleset
    requiring PRs. Live at [loganbaugh.com](https://loganbaugh.com).
 
-Final copy for every section lives in the vault's `Final/` folder (`Home.md`, `Provider Directory Search.md`).
+Copy lives in the repo: page and component markup for the home page and 404, and
+`src/content/work/` for case studies. (It started in an Obsidian vault, since retired.)
 
 ## Design passes — audited Sept 2026, in progress
 
@@ -248,8 +249,9 @@ own reviewable PR.
 4. **Projects** — the cards are the one generic component (border + white + radius, ×3).
    Replace with an editorial list: hairline dividers, serif tagline, and a hover-revealed
    thumbnail from the unused `src/assets/projects/` imagery.
-5. **404 page** — Netlify serves its default. A branded 404 in the thread's voice is a cheap,
-   on-brand win. Copy lives in the vault.
+5. ✅ **404 page** — `src/pages/404.astro`: a single static question/answer exchange reusing
+   `Bubble`, under a plain "Page not found" `h1`. No typing choreography — not worth
+   extracting About's sequencer for one exchange.
 6. **Polish** — case study meta strip (role / stack / year, mono), active-section state in the
    nav, and a mobile QA pass at ~400px that has not been done yet.
 
