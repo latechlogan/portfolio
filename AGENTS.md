@@ -5,7 +5,7 @@ are complete. Work from here is maintenance and additions, not phased build-out 
 tightly and don't treat the doc as a to-do list.
 
 - **`ARCHITECTURE.md`** — the source of truth for this build: stack decisions, the LOCKED design system (tokens, fonts, color rules), component inventory, the build record, and the backlog of things deliberately not built. Read it before any build work. The design system is LOCKED — don't add tokens, fonts, or colors without saying so explicitly.
-- **Copy/content** lives in the Obsidian vault at `~/Documents/Obsidian Vaults/Portfolio Site/Final/` (`Home.md`, `Provider Directory Search.md`). The vault is the source of truth for copy — reference it, don't duplicate it into the repo.
+- **Copy/content** lives in the repo — in the page/component markup (`src/pages/`, `src/components/`) and, for case studies, `src/content/work/`. There is no external copy source anymore.
 
 ## Development
 

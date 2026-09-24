@@ -1,0 +1,49 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Bubble from "../components/Bubble.astro";
+---
+
+<!-- Built to 404.html, which Netlify serves (with a 404 status) for any
+     path that doesn't match a page. Static on purpose: the About thread's
+     typing choreography isn't worth extracting for a single exchange. -->
+<BaseLayout
+  title="Page not found"
+  description="This page doesn't exist — head back to the homepage."
+>
+  <section class="section" aria-labelledby="not-found-heading">
+    <h1 id="not-found-heading">Page not found</h1>
+
+    <div class="thread">
+      <Bubble variant="question">Is this page supposed to be here?</Bubble>
+      <Bubble variant="answer">
+        <p>
+          Nope, that's a 404. Maybe a typo in the link, maybe something I
+          moved. Either way, the good stuff is on the homepage.
+        </p>
+        <p><a href="/">Take me there</a></p>
+      </Bubble>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .section {
+    max-width: calc(var(--measure) + var(--space-4) * 2);
+    margin-inline: auto;
+    padding: var(--space-16) var(--space-4);
+  }
+
+  /* Sized like the home page's section headings — the thread is the
+     content here, the heading just names the page for assistive tech. */
+  h1 {
+    font-size: var(--text-xl);
+    font-weight: 500;
+    margin: 0 0 var(--space-8);
+  }
+
+  .thread {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+</style>
