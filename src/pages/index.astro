@@ -2,7 +2,10 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "../components/Hero.astro";
 import About from "../components/About.astro";
-import ProjectCard from "../components/ProjectCard.astro";
+import ProjectRow from "../components/ProjectRow.astro";
+import zapmathImage from "../assets/projects/zapmath.png";
+import foxImage from "../assets/projects/fox-family-electric.png";
+import providerSearchImage from "../assets/projects/provider-search-after.jpg";
 ---
 
 <BaseLayout
@@ -15,9 +18,10 @@ import ProjectCard from "../components/ProjectCard.astro";
   <section id="projects" class="section" aria-labelledby="projects-heading">
     <h2 id="projects-heading">Things I've made</h2>
 
-    <div class="cards">
-      <ProjectCard
+    <ul class="projects">
+      <ProjectRow
         title="Zapmath"
+        image={zapmathImage}
         tagline="voice-controlled math game · web + iOS"
         description="A flashcard game my kids play by speaking their answers out loud. Three on-device speech engines and a custom native plugin, so it works across browsers and iOS without sending a child's voice to anyone's server. React, TypeScript, tested end to end."
         links={[
@@ -30,8 +34,9 @@ import ProjectCard from "../components/ProjectCard.astro";
         ]}
       />
 
-      <ProjectCard
+      <ProjectRow
         title="Fox Family Electric"
+        image={foxImage}
         tagline="marketing site · design to deploy"
         description="Designed and built end to end for an electrical contractor: clean, fast, accessible, and simple for a small business to keep current. Astro, with a real CI/CD pipeline behind it."
         links={[
@@ -43,8 +48,9 @@ import ProjectCard from "../components/ProjectCard.astro";
         ]}
       />
 
-      <ProjectCard
+      <ProjectRow
         title="Provider Directory Search"
+        image={providerSearchImage}
         tagline="interaction design · dual-mode search"
         description="A hospital physician directory that only let you browse by specialty — so if you didn't know the specialty, you opened every accordion hunting for a name. I hit that wall myself during data cleanup, then built dual-mode search: filter by specialty or by name, in real time, auto-expanding the right groups so results keep their context."
         links={[
@@ -54,7 +60,7 @@ import ProjectCard from "../components/ProjectCard.astro";
           },
         ]}
       />
-    </div>
+    </ul>
 
     <div class="legacy">
       <h3>Before that</h3>
@@ -109,15 +115,22 @@ import ProjectCard from "../components/ProjectCard.astro";
     margin: 0 0 var(--space-8);
   }
 
-  .cards {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-6);
+  /* Arrow everywhere in Projects, hand on links only — the I-beam
+     flickering on and off over text fought the hover thumbnail. Links keep
+     the hand because the UA stylesheet sets cursor: pointer on them
+     directly, which beats this inherited value. Text stays selectable. */
+  #projects {
+    cursor: default;
+  }
+
+  .projects {
+    list-style: none;
+    padding: 0;
+    margin: 0;
   }
 
   .legacy {
-    margin-top: var(--space-8);
-    padding-top: var(--space-8);
+    padding-top: var(--space-6);
     border-top: 1px solid var(--border);
   }
 

@@ -1,0 +1,186 @@
+---
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
+
+interface Link {
+  label: string;
+  href: string;
+  external?: boolean;
+}
+
+interface Props {
+  title: string;
+  tagline: string;
+  description: string;
+  links: Link[];
+  image: ImageMetadata;
+}
+
+const { title, tagline, description, links, image } = Astro.props;
+---
+
+<li class="project">
+  <h3>{title}</h3>
+  <p class="tagline">{tagline}</p>
+  <p class="description">{description}</p>
+  <p class="links">
+    {
+      links.map((link, i) => (
+        <>
+          {i > 0 && (
+            <span class="sep" aria-hidden="true">
+              ·
+            </span>
+          )}
+          <a
+            href={link.href}
+            target={link.external ? "_blank" : undefined}
+            rel={link.external ? "noopener" : undefined}
+          >
+            {link.label}
+          </a>
+        </>
+      ))
+    }
+  </p>
+
+  <!-- Decorative: the row's text and links carry everything, so alt is
+       empty. Hidden (display: none) unless the device can hover — and a
+       lazy image that's display: none is never fetched, so touch devices
+       don't pay for it. On hover it follows the pointer (script below). -->
+  <Image
+    class="thumb"
+    src={image}
+    alt=""
+    widths={[240, 480]}
+    sizes="240px"
+    loading="lazy"
+  />
+</li>
+
+<style>
+  /* Editorial list row: a hairline above each entry instead of a card. */
+  .project {
+    border-top: 1px solid var(--border);
+    padding-block: var(--space-6);
+  }
+
+  h3 {
+    font-size: var(--text-lg);
+    font-weight: 500;
+    margin: 0 0 var(--space-1);
+  }
+
+  .tagline {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: var(--text-base);
+    color: var(--text-secondary);
+    margin: 0 0 var(--space-4);
+  }
+
+  .description {
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    color: var(--text-secondary);
+    margin: 0 0 var(--space-4);
+  }
+
+  .links {
+    font-size: var(--text-sm);
+    margin: 0;
+  }
+
+  .sep {
+    display: inline-block;
+    margin: 0 var(--space-2);
+    color: var(--text-muted);
+  }
+
+  .thumb {
+    display: none;
+  }
+
+  /* Feature detection, not a breakpoint: only devices that can actually
+     hover get the thumbnail. The width floor guarantees room for it to the
+     right of the cursor anywhere over the text column, so it never needs
+     to flip sides or clip at the viewport edge. */
+  @media (hover: hover) and (pointer: fine) and (min-width: 1280px) {
+    /* Fixed, so the pointer's viewport coordinates map straight onto it;
+       the script below writes the transform. `translate` composes with that
+       transform: it parks the image below-right of the cursor, clear of the
+       text being hovered. */
+    .thumb {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      translate: 20px 20px;
+      z-index: 10;
+      width: 240px;
+      height: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* .is-following is added by the script, so without JS the thumbnail
+       never shows up stranded in the corner. */
+    .project.is-following:hover .thumb {
+      opacity: 1;
+    }
+  }
+
+  /* Only opacity transitions — position is driven by the spring in the
+     script, and a CSS transform transition would fight it. */
+  @media (prefers-reduced-motion: no-preference) {
+    .thumb {
+      transition: opacity 0.2s ease;
+    }
+  }
+</style>
+
+<script>
+  import { springValue, styleEffect } from "motion";
+
+  // Each row's thumbnail chases the pointer on a spring. CSS decides
+  // *whether* it shows (hover + the media query above); this only decides
+  // *where*. springValue animates toward whatever it was last .set() to and
+  // keeps its velocity when the target changes mid-flight — that's what
+  // gives the slight lag and overshoot. Underdamped (damping below
+  // critical) on purpose, so it settles with a small bounce.
+  const SPRING = { stiffness: 300, damping: 20, mass: 0.5 };
+  const prefersReducedMotion = matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  document.querySelectorAll<HTMLElement>(".project").forEach((project) => {
+    const thumb = project.querySelector<HTMLElement>(".thumb");
+    if (!thumb) return;
+
+    const x = springValue<number>(0, SPRING);
+    const y = springValue<number>(0, SPRING);
+    styleEffect(thumb, { x, y });
+
+    // On entry, jump straight to the pointer — otherwise the thumbnail
+    // would fly in from wherever it was last left. Reduced motion always
+    // jumps, so it just tracks the cursor with no spring.
+    project.addEventListener("pointerenter", (event) => {
+      x.jump(event.clientX);
+      y.jump(event.clientY);
+    });
+
+    project.addEventListener("pointermove", (event) => {
+      if (prefersReducedMotion) {
+        x.jump(event.clientX);
+        y.jump(event.clientY);
+      } else {
+        x.set(event.clientX);
+        y.set(event.clientY);
+      }
+    });
+
+    project.classList.add("is-following");
+  });
+</script>
