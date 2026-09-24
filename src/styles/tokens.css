@@ -17,6 +17,7 @@
 
   /* pops — sparing */
   --coral:         #F97648;  /* DECORATIVE only: one rare warm pop */
+  --coral-tint:    color-mix(in srgb, var(--coral) 40%, transparent);  /* hero highlighter — same in both themes */
 }
 
 [data-theme="dark"] {
@@ -44,7 +45,7 @@
   --text-2xl:  1.953rem;  /* larger headings */
   --text-display: clamp(2.75rem, 6vw, 4rem); /* hero — off-scale */
 
-  --leading-tight:  1.05;  /* display */
+  --leading-tight:  1.118; /* display — √1.25, half a step on the type ratio (snug = 1.25¹, normal ≈ 1.25²) */
   --leading-snug:   1.25;  /* headings */
   --leading-normal: 1.6;   /* body */
   --tracking-tight: -0.02em; /* display + large headings */

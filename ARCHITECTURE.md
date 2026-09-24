@@ -98,6 +98,7 @@ Direction: ~90% warm-neutral foundation with small, sparing color pops. Green is
 
   /* pops — sparing */
   --coral:         #F97648;  /* DECORATIVE only: one rare warm pop */
+  --coral-tint:    color-mix(in srgb, var(--coral) 40%, transparent);  /* hero highlighter — same in both themes */
 }
 
 [data-theme="dark"] {
@@ -121,7 +122,7 @@ Direction: ~90% warm-neutral foundation with small, sparing color pops. Green is
 - *Functional* (`--green-ink`, consistent for a11y): links, CTA, focus rings, active nav, text selection.
 - *Decorative* (`--green-fill`, sparing): the "LB" monogram, typing-indicator dots, small section markers, project-card hover wash.
 - *Chips* (`--green-tint`): background of the mono "make it work" chips / tech terms.
-- *Coral* (`--coral`, rare): a single warm pop — one hero detail or a lone accent moment. Not for text.
+- *Coral* (`--coral`, rare): a single warm pop — one hero detail or a lone accent moment. Not for text. Spent on the hero's highlighter stroke behind *make it beautiful* via `--coral-tint` (added Sept 2026; one value for both themes — the text on top carries the contrast either way).
 - *Tone-on-tone:* recessed `--surface-1` (question bubbles) vs. white `--surface-2` (answer cards) — quiet two-tinted-neutral contrast, no extra color.
 
 Verify all accent-on-surface pairs at WCAG AA in **both** themes before shipping.
@@ -140,7 +141,7 @@ Mirrors Stripe/Linear/Vercel: a tight, weight-driven text scale for reading/UI, 
   --text-2xl:  1.953rem;  /* larger headings */
   --text-display: clamp(2.75rem, 6vw, 4rem); /* hero — off-scale */
 
-  --leading-tight:  1.05;  /* display */
+  --leading-tight:  1.118; /* display — √1.25, half a step on the type ratio */
   --leading-snug:   1.25;  /* headings */
   --leading-normal: 1.6;   /* body */
   --tracking-tight: -0.02em; /* display + large headings */
@@ -154,6 +155,8 @@ Mirrors Stripe/Linear/Vercel: a tight, weight-driven text scale for reading/UI, 
 }
 ```
 
+Line-heights follow the type ratio too: `snug` = 1.25¹, `normal` ≈ 1.25², and `tight` = √1.25 (half a step). `tight` was 1.05 until Sept 2026, when the hero's two-line serif/mono display needed room between the coral highlighter and the code chip.
+
 Hierarchy is driven by **weight + line-height**, not size alone. Keep to two weights (400/500). The hero display is the one place drama is allowed — it's where the serif/mono tagline lives.
 
 ## Components
@@ -162,7 +165,7 @@ Hierarchy is driven by **weight + line-height**, not size alone. Keep to two wei
 - **Head** — SEO/meta, OG tags, title template (`%s · Logan Baugh`), canonical URL.
 - **Nav** — links: About, Projects, Resume, GitHub, LinkedIn + `ThemeToggle`.
 - **ThemeToggle** — button toggling `[data-theme]`, persisted to `localStorage`, respects `prefers-color-scheme` on first visit.
-- **Hero** — display headline "Design engineer" + serif/mono tagline (`make it beautiful` = serif span, `make it work` = mono chip on `--green-tint`) + supporting line + CTA.
+- **Hero** — mono eyebrow "Design engineer" + the serif/mono tagline as the `h1` (`make it beautiful` = serif with a `--coral-tint` highlighter, `make it work` = mono chip on `--green-tint`) + supporting line + CTA. `h1` is `--text-2xl` below 500px (display wraps to 4–5 lines there) and `--text-display` from 500px. Headline words are split into spans at build time for the entrance; the `h1` carries an `aria-label` with the full sentence.
 - **About** — the conversational thread; composes `Bubble` components; owns the scroll-reveal.
 - **Bubble** — props: `variant: 'question' | 'answer'`. Question = `--surface-1`, serif italic; answer = `--surface-2`, sans, with mono chips for tech terms. Asymmetric corner per side. Answer rows also carry a `hidden` `.typing-slot` overlay (a `Typing`) pinned to the card's bottom-right corner; About's script shows it briefly before the card lands. Layout is reserved either way, so the swap causes no shift.
 - **Typing** — no props. The three-dot indicator, shaped like an answer card so it reads as "Logan is typing". Only used inside answer rows; the thread deliberately ends on the last answer rather than a dangling indicator, so nothing implies more is coming.
@@ -186,6 +189,7 @@ Astro 5 content layer. One collection now, one stubbed for later.
 Use the vanilla **Motion** library (motion.dev) — framework-agnostic, tiny, no React. CSS handles the simplest states.
 
 - **Conversation choreography** — About's thread plays like a chat. Motion's `inView()` marks each row ready as it crosses a spatial threshold (`-12%` viewport margin); a small sequencer then releases rows strictly in document order: a question pops in (spring), then the answer's typing dots appear for a beat scaled to the answer's length (400–1000ms), then the dots fade and the card lands. Rows the reader jumped past without them ever entering the viewport are shown plainly, so the thread reads whole on the way back up. **Why a sequencer:** Chrome delivers IntersectionObserver callbacks in no particular order, so "play on callback" let answers land before their questions. `animate` comes from `motion/mini`; `inView`/`spring` from `motion` (mini doesn't export them).
+- **Hero entrance** — CSS keyframes, not Motion: the hero is above the fold, and a deferred script would paint the content before hiding it. Eyebrow → headline word by word (60ms apart, overshoot curve standing in for a spring) → coral highlighter sweeps in (`background-size`) → support → CTA, ~1.5s total. `animation-fill-mode: backwards` so finished animations don't override the CTA's `:active` nudge.
 - **Typing indicator** — CSS keyframes on the dots (`Typing.astro`).
 - **Project thumbnails** — chase the pointer on a slightly underdamped spring (`springValue`, stiffness 300 / damping 20 / mass 0.5): a touch of lag and a ~3px overshoot. Jumps to the pointer on entry so it never flies in; reduced motion always jumps. CSS owns show/hide (opacity) and the offset from the cursor (`translate`). The Projects section uses `cursor: default` so the pointer doesn't flicker to an I-beam over text; links keep the hand.
 - **Hover / press / focus states** — pure CSS transitions. Links rest on a 40% underline that fills to full on hover; the theme toggle squashes slightly on press; in-page anchors scroll smoothly.
@@ -241,10 +245,9 @@ own reviewable PR.
 
 1. ✅ **Alignment and feedback** — nav shares the content column; links rest on a 40% underline
    that fills on hover; press states; smooth in-page scroll. (PR #7)
-2. **Hero** — the serif/mono tagline is the real idea, so promote it to the display and demote
-   "Design engineer" to the eyebrow; give the hero a spring entrance that matches About; spend
-   `--coral` on one detail. *Touches the LOCKED system:* likely a larger display size token —
-   state the change explicitly.
+2. ✅ **Hero** — tagline promoted to the `h1`, "Design engineer" demoted to a mono eyebrow;
+   `--text-2xl` → `--text-display` at 500px; `--coral` spent on a highlighter via the new
+   `--coral-tint`; `--leading-tight` retuned to √1.25; staggered word-by-word CSS entrance.
 3. ✅ **Conversation choreography** — question → typing dots → answer, released in document
    order by a sequencer; trailing indicator removed. (PR #7)
 4. ✅ **Projects** — cards replaced with an editorial list (`ProjectRow`). The planned imagery
@@ -255,7 +258,8 @@ own reviewable PR.
    `Bubble`, under a plain "Page not found" `h1`. No typing choreography — not worth
    extracting About's sequencer for one exchange.
 6. **Polish** — case study meta strip (role / stack / year, mono), active-section state in the
-   nav, and a mobile QA pass at ~400px that has not been done yet.
+   nav, and a mobile QA pass at ~400px that has not been done yet. Known finding: at 390px the
+   nav wraps to three rows, with the theme toggle alone on the last.
 
 ## Backlog — deliberately not built
 
