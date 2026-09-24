@@ -2,6 +2,9 @@
 title: "Provider Directory Search"
 tagline: "interaction design · dual-mode search"
 summary: "A hospital physician directory that could only be browsed by specialty — I designed and built the dual-mode search it was missing."
+role: "front-end design + build"
+stack: ["vanilla JS", "HTML", "CSS"]
+year: 2024
 order: 1
 ---
 
@@ -17,5 +20,3 @@ So I built dual-mode search: toggle between searching by specialty or by provide
 <video src="/media/provider-search-demo.mp4" poster="/media/provider-search-poster.jpg" width="1352" height="600" muted loop playsinline controls preload="metadata" data-autoplay aria-label="Demo of the rebuilt directory: Filter by Specialty and Filter by Name toggle buttons above a search input. As a name is typed, results filter in real time and the matching specialty groups expand automatically."></video>
 
 The specialty grouping existed for a reason — some people really do search that way. The fix wasn't to tear it down; it was to add the search mode the interface was missing.
-
-> build: vanilla JavaScript, real-time DOM filtering across a large provider dataset

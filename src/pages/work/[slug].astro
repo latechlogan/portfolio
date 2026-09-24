@@ -22,6 +22,13 @@ const { Content } = await render(entry);
     <header class="header">
       <h1>{entry.data.title}</h1>
       <p class="tagline">{entry.data.tagline}</p>
+      <!-- Facts about the project, kept out of the story: a <dl> so each
+           label is announced with its value. -->
+      <dl class="meta">
+        <div><dt>role</dt><dd>{entry.data.role}</dd></div>
+        <div><dt>stack</dt><dd>{entry.data.stack.join(", ")}</dd></div>
+        <div><dt>year</dt><dd>{entry.data.year}</dd></div>
+      </dl>
     </header>
 
     <div class="prose">
@@ -78,6 +85,27 @@ const { Content } = await render(entry);
     margin: 0;
   }
 
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-6);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    margin: var(--space-4) 0 0;
+  }
+
+  .meta dt {
+    display: inline;
+    color: var(--text-muted);
+    margin-right: var(--space-2);
+  }
+
+  .meta dd {
+    display: inline;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
   .prose :global(p) {
     font-size: var(--text-base);
     line-height: var(--leading-normal);
@@ -104,21 +132,5 @@ const { Content } = await render(entry);
 
   .prose :global(p:has(> img)) {
     margin-block: var(--space-8);
-  }
-
-  .prose :global(blockquote) {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    font-style: normal;
-    color: var(--text-muted);
-    margin: var(--space-8) 0 0;
-    padding: var(--space-6) 0 0;
-    border-top: 1px solid var(--border);
-  }
-
-  .prose :global(blockquote p) {
-    font-size: inherit;
-    color: inherit;
-    margin: 0;
   }
 </style>
