@@ -47,7 +47,7 @@ const { title, tagline, description, links, image } = Astro.props;
   <!-- Decorative: the row's text and links carry everything, so alt is
        empty. Hidden (display: none) unless the device can hover — and a
        lazy image that's display: none is never fetched, so touch devices
-       don't pay for it. -->
+       don't pay for it. On hover it follows the pointer (script below). -->
   <Image
     class="thumb"
     src={image}
@@ -61,7 +61,6 @@ const { title, tagline, description, links, image } = Astro.props;
 <style>
   /* Editorial list row: a hairline above each entry instead of a card. */
   .project {
-    position: relative; /* anchors .thumb */
     border-top: 1px solid var(--border);
     padding-block: var(--space-6);
   }
@@ -103,36 +102,56 @@ const { title, tagline, description, links, image } = Astro.props;
   }
 
   /* Feature detection, not a breakpoint: only devices that can actually
-     hover get the thumbnail. The width floor keeps the right gutter wide
-     enough to hold it beside the text column. */
+     hover get the thumbnail. The width floor guarantees room for it to the
+     right of the cursor anywhere over the text column, so it never needs
+     to flip sides or clip at the viewport edge. */
   @media (hover: hover) and (pointer: fine) and (min-width: 1280px) {
+    /* Fixed, so the pointer's viewport coordinates map straight onto it;
+       the script below writes the transform. */
     .thumb {
       display: block;
-      position: absolute;
-      top: var(--space-6);
-      left: calc(100% + var(--space-8));
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
       width: 240px;
       height: auto;
       border: 1px solid var(--border);
       border-radius: var(--radius);
       opacity: 0;
-      transform: translateY(4px);
       pointer-events: none;
     }
 
-    /* :focus-within gives keyboard users the same reveal as hover. */
-    .project:hover .thumb,
-    .project:focus-within .thumb {
+    /* .is-following is added by the script, so without JS the thumbnail
+       never shows up stranded in the corner. */
+    .project.is-following:hover .thumb {
       opacity: 1;
-      transform: none;
     }
   }
 
+  /* Only opacity transitions — a transform transition would make the
+     thumbnail trail the cursor instead of staying locked to it. */
   @media (prefers-reduced-motion: no-preference) {
     .thumb {
-      transition:
-        opacity 0.2s ease,
-        transform 0.2s ease;
+      transition: opacity 0.2s ease;
     }
   }
 </style>
+
+<script>
+  // Locks each row's thumbnail to the pointer. CSS decides *whether* it
+  // shows (hover + the media query above); this only decides *where*.
+  // Offset right of the cursor and centered on it vertically, so it
+  // never sits under the pointer.
+  const OFFSET_X = 20;
+
+  document.querySelectorAll<HTMLElement>(".project").forEach((project) => {
+    const thumb = project.querySelector<HTMLElement>(".thumb");
+    if (!thumb) return;
+
+    project.classList.add("is-following");
+    project.addEventListener("pointermove", (event) => {
+      thumb.style.transform = `translate(${event.clientX + OFFSET_X}px, ${event.clientY}px) translateY(-50%)`;
+    });
+  });
+</script>

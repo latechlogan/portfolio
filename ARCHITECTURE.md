@@ -166,7 +166,7 @@ Hierarchy is driven by **weight + line-height**, not size alone. Keep to two wei
 - **About** — the conversational thread; composes `Bubble` components; owns the scroll-reveal.
 - **Bubble** — props: `variant: 'question' | 'answer'`. Question = `--surface-1`, serif italic; answer = `--surface-2`, sans, with mono chips for tech terms. Asymmetric corner per side. Answer rows also carry a `hidden` `.typing-slot` overlay (a `Typing`) pinned to the card's bottom-right corner; About's script shows it briefly before the card lands. Layout is reserved either way, so the swap causes no shift.
 - **Typing** — no props. The three-dot indicator, shaped like an answer card so it reads as "Logan is typing". Only used inside answer rows; the thread deliberately ends on the last answer rather than a dangling indicator, so nothing implies more is coming.
-- **ProjectRow** — props: `title`, `tagline`, `description`, `links`, `image`. One `<li>` in the Projects list: hairline divider, serif tagline, no card chrome. On hover-capable pointers ≥1280px, a decorative thumbnail (screenshot in `src/assets/projects/`) fades in beside the text column on hover or `:focus-within`; everywhere else it's `display: none`, so touch devices never fetch it.
+- **ProjectRow** — props: `title`, `tagline`, `description`, `links`, `image`. One `<li>` in the Projects list: hairline divider, serif tagline, no card chrome. On hover-capable pointers ≥1280px, a decorative thumbnail (screenshot in `src/assets/projects/`) fades in on hover and stays locked to the pointer (`position: fixed`, transform written on `pointermove`); everywhere else it's `display: none`, so touch devices never fetch it.
 - **Footer** — "Designed and built by hand · 2026"; "built by hand" links the repo.
 
 ## Content collections (`content.config.ts`)
@@ -187,6 +187,7 @@ Use the vanilla **Motion** library (motion.dev) — framework-agnostic, tiny, no
 
 - **Conversation choreography** — About's thread plays like a chat. Motion's `inView()` marks each row ready as it crosses a spatial threshold (`-12%` viewport margin); a small sequencer then releases rows strictly in document order: a question pops in (spring), then the answer's typing dots appear for a beat scaled to the answer's length (400–1000ms), then the dots fade and the card lands. Rows the reader jumped past without them ever entering the viewport are shown plainly, so the thread reads whole on the way back up. **Why a sequencer:** Chrome delivers IntersectionObserver callbacks in no particular order, so "play on callback" let answers land before their questions. `animate` comes from `motion/mini`; `inView`/`spring` from `motion` (mini doesn't export them).
 - **Typing indicator** — CSS keyframes on the dots (`Typing.astro`).
+- **Project thumbnails** — follow the pointer with no lag; a small inline script positions them, CSS owns show/hide. Only opacity transitions, since a transform transition would make them trail. No Motion needed — it's direct positioning, not animation.
 - **Hover / press / focus states** — pure CSS transitions. Links rest on a 40% underline that fills to full on hover; the theme toggle squashes slightly on press; in-page anchors scroll smoothly.
 - **`prefers-reduced-motion: reduce`** — gate all motion; content appears instantly.
 
@@ -248,7 +249,7 @@ own reviewable PR.
    order by a sequencer; trailing indicator removed. (PR #7)
 4. ✅ **Projects** — cards replaced with an editorial list (`ProjectRow`). The planned imagery
    didn't match the projects, so Zapmath and Fox Family got fresh homepage screenshots and
-   Provider Search uses its demo poster. Thumbnails are hover-only on desktop and text-only on
+   Provider Search uses its demo poster. Thumbnails follow the pointer on desktop and are text-only on
    touch, gated by `(hover: hover) and (pointer: fine)` rather than width alone.
 5. ✅ **404 page** — `src/pages/404.astro`: a single static question/answer exchange reusing
    `Bubble`, under a plain "Page not found" `h1`. No typing choreography — not worth
