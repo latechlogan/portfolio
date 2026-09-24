@@ -257,8 +257,8 @@ own reviewable PR.
 5. ✅ **404 page** — `src/pages/404.astro`: a single static question/answer exchange reusing
    `Bubble`, under a plain "Page not found" `h1`. No typing choreography — not worth
    extracting About's sequencer for one exchange.
-6. **Polish** — case study meta strip (role / stack / year, mono), active-section state in the
-   nav, and ✅ mobile QA at 360/390/414px — no horizontal overflow anywhere; the nav (three
+6. **Polish** — case study meta strip (role / stack / year, mono), ~~active-section state in the
+   nav~~ (dropped — see backlog), and ✅ mobile QA at 360/390/414px — no horizontal overflow anywhere; the nav (three
    ragged rows at 390px) is now two rows below 540px: brand + toggle, then links.
 
 ## Backlog — deliberately not built
@@ -268,5 +268,8 @@ Nothing here is a gap in v1; each is a decision to revisit, not an unfinished ta
 - **`writing` collection** — intentionally left as a stub. The intent is documented above, but
   nothing exists in code: no `writing` entry in `content.config.ts`, no `src/content/writing/`, no
   route. Staying stubbed until there's something worth publishing; wire up all three then.
-- **Coral** — `--coral` is defined in the token set but not yet spent anywhere. It's reserved for a
-  single rare warm pop; leaving it unused is a valid outcome.
+- **Active-section state in the nav** — built and dropped (Sept 2026). The nav isn't sticky, so
+  it has scrolled away by the time About or Projects is being read, and the highlight is never
+  visible. The page is one short scroll with two linked sections, so there's no wayfinding
+  problem to solve. Revisit only if the nav becomes sticky (desktop only — the two-row phone
+  nav is too tall to pin).
