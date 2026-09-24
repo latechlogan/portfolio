@@ -163,7 +163,7 @@ Hierarchy is driven by **weight + line-height**, not size alone. Keep to two wei
 
 - **BaseLayout** — the shell. Props: `title`, `description`. Renders `Head`, `Nav`, `<slot/>`, `Footer`. Inlines a tiny theme-init script in `<head>` (set `data-theme` before paint to avoid a flash), and the Umami analytics script tag when `PROD`.
 - **Head** — SEO/meta, OG tags, title template (`%s · Logan Baugh`), canonical URL.
-- **Nav** — links: About, Projects, Resume, GitHub, LinkedIn + `ThemeToggle`.
+- **Nav** — links: About, Projects, Resume, GitHub, LinkedIn + `ThemeToggle`. Below 540px it's two rows (brand + toggle, then links) via flex `order`; tab order stays brand → links → toggle, matching desktop.
 - **ThemeToggle** — button toggling `[data-theme]`, persisted to `localStorage`, respects `prefers-color-scheme` on first visit.
 - **Hero** — mono eyebrow "Design engineer" + the serif/mono tagline as the `h1` (`make it beautiful` = serif with a `--coral-tint` highlighter, `make it work` = mono chip on `--green-tint`) + supporting line + CTA. `h1` is `--text-2xl` below 500px (display wraps to 4–5 lines there) and `--text-display` from 500px. Headline words are split into spans at build time for the entrance; the `h1` carries an `aria-label` with the full sentence.
 - **About** — the conversational thread; composes `Bubble` components; owns the scroll-reveal.
@@ -258,8 +258,8 @@ own reviewable PR.
    `Bubble`, under a plain "Page not found" `h1`. No typing choreography — not worth
    extracting About's sequencer for one exchange.
 6. **Polish** — case study meta strip (role / stack / year, mono), active-section state in the
-   nav, and a mobile QA pass at ~400px that has not been done yet. Known finding: at 390px the
-   nav wraps to three rows, with the theme toggle alone on the last.
+   nav, and ✅ mobile QA at 360/390/414px — no horizontal overflow anywhere; the nav (three
+   ragged rows at 390px) is now two rows below 540px: brand + toggle, then links.
 
 ## Backlog — deliberately not built
 

@@ -39,20 +39,41 @@ const LINKEDIN_URL = 'https://www.linkedin.com/in/logan-baugh/';
 		padding: var(--space-4);
 	}
 
+	/* Mobile first: two tidy rows — brand and theme toggle on top (the
+	   auto margin pushes the toggle right), links as a full-width second
+	   row. Left to wrap on its own, the nav fell into three ragged rows
+	   with the toggle alone at the bottom. */
 	.brand {
 		font-weight: 500;
 		color: var(--text-primary);
 		text-decoration: none;
+		margin-right: auto;
 	}
 
 	ul {
+		order: 1; /* after the toggle, onto its own row */
+		flex-basis: 100%;
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
 		gap: var(--space-4);
 		list-style: none;
 		padding: 0;
-		margin: 0 auto 0 0;
+		margin: 0;
+	}
+
+	/* One row once it fits: brand + links + toggle measure ~510px with
+	   padding; 540px leaves breathing room before the toggle. */
+	@media (min-width: 540px) {
+		.brand {
+			margin-right: 0;
+		}
+
+		ul {
+			order: 0;
+			flex-basis: auto;
+			margin: 0 auto 0 0;
+		}
 	}
 
 	ul a {
