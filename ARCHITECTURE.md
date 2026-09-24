@@ -229,6 +229,30 @@ The original SDD-lite plan, kept as the record of how v1 came together. Each pha
 
 Final copy for every section lives in the vault's `Final/` folder (`Home.md`, `Provider Directory Search.md`).
 
+## Design passes — audited Sept 2026, in progress
+
+A redesign audit against the live site (Sept 13, 2026) found the foundation strong and the
+generic-pattern checklist mostly inapplicable: no grain, imagery, or glassmorphism — those fix
+flat *generic* sites, and this one is flat on purpose. What it found instead is a short list of
+places the site stops short of its own principles. Ordered by impact vs. risk; each pass is its
+own reviewable PR.
+
+1. ✅ **Alignment and feedback** — nav shares the content column; links rest on a 40% underline
+   that fills on hover; press states; smooth in-page scroll. (PR #7)
+2. **Hero** — the serif/mono tagline is the real idea, so promote it to the display and demote
+   "Design engineer" to the eyebrow; give the hero a spring entrance that matches About; spend
+   `--coral` on one detail. *Touches the LOCKED system:* likely a larger display size token —
+   state the change explicitly.
+3. ✅ **Conversation choreography** — question → typing dots → answer, released in document
+   order by a sequencer; trailing indicator removed. (PR #7)
+4. **Projects** — the cards are the one generic component (border + white + radius, ×3).
+   Replace with an editorial list: hairline dividers, serif tagline, and a hover-revealed
+   thumbnail from the unused `src/assets/projects/` imagery.
+5. **404 page** — Netlify serves its default. A branded 404 in the thread's voice is a cheap,
+   on-brand win. Copy lives in the vault.
+6. **Polish** — case study meta strip (role / stack / year, mono), active-section state in the
+   nav, and a mobile QA pass at ~400px that has not been done yet.
+
 ## Backlog — deliberately not built
 
 Nothing here is a gap in v1; each is a decision to revisit, not an unfinished task.
