@@ -1,0 +1,138 @@
+---
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
+
+interface Link {
+  label: string;
+  href: string;
+  external?: boolean;
+}
+
+interface Props {
+  title: string;
+  tagline: string;
+  description: string;
+  links: Link[];
+  image: ImageMetadata;
+}
+
+const { title, tagline, description, links, image } = Astro.props;
+---
+
+<li class="project">
+  <h3>{title}</h3>
+  <p class="tagline">{tagline}</p>
+  <p class="description">{description}</p>
+  <p class="links">
+    {
+      links.map((link, i) => (
+        <>
+          {i > 0 && (
+            <span class="sep" aria-hidden="true">
+              ·
+            </span>
+          )}
+          <a
+            href={link.href}
+            target={link.external ? "_blank" : undefined}
+            rel={link.external ? "noopener" : undefined}
+          >
+            {link.label}
+          </a>
+        </>
+      ))
+    }
+  </p>
+
+  <!-- Decorative: the row's text and links carry everything, so alt is
+       empty. Hidden (display: none) unless the device can hover — and a
+       lazy image that's display: none is never fetched, so touch devices
+       don't pay for it. -->
+  <Image
+    class="thumb"
+    src={image}
+    alt=""
+    widths={[240, 480]}
+    sizes="240px"
+    loading="lazy"
+  />
+</li>
+
+<style>
+  /* Editorial list row: a hairline above each entry instead of a card. */
+  .project {
+    position: relative; /* anchors .thumb */
+    border-top: 1px solid var(--border);
+    padding-block: var(--space-6);
+  }
+
+  h3 {
+    font-size: var(--text-lg);
+    font-weight: 500;
+    margin: 0 0 var(--space-1);
+  }
+
+  .tagline {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: var(--text-base);
+    color: var(--text-secondary);
+    margin: 0 0 var(--space-4);
+  }
+
+  .description {
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    color: var(--text-secondary);
+    margin: 0 0 var(--space-4);
+  }
+
+  .links {
+    font-size: var(--text-sm);
+    margin: 0;
+  }
+
+  .sep {
+    display: inline-block;
+    margin: 0 var(--space-2);
+    color: var(--text-muted);
+  }
+
+  .thumb {
+    display: none;
+  }
+
+  /* Feature detection, not a breakpoint: only devices that can actually
+     hover get the thumbnail. The width floor keeps the right gutter wide
+     enough to hold it beside the text column. */
+  @media (hover: hover) and (pointer: fine) and (min-width: 1280px) {
+    .thumb {
+      display: block;
+      position: absolute;
+      top: var(--space-6);
+      left: calc(100% + var(--space-8));
+      width: 240px;
+      height: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      opacity: 0;
+      transform: translateY(4px);
+      pointer-events: none;
+    }
+
+    /* :focus-within gives keyboard users the same reveal as hover. */
+    .project:hover .thumb,
+    .project:focus-within .thumb {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .thumb {
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+    }
+  }
+</style>

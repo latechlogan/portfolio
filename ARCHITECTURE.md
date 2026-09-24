@@ -36,7 +36,7 @@ src/
     About.astro         # the conversational thread
     Bubble.astro        # one Q or A bubble (reusable); answers carry a hidden typing overlay
     Typing.astro        # the three-dot "typing…" indicator shown before each answer
-    ProjectCard.astro   # one project entry (external or internal link)
+    ProjectRow.astro    # one project entry in the Projects list
   layouts/
     BaseLayout.astro    # html shell: Head, Nav, <slot/>, Footer, theme init
   content/
@@ -166,7 +166,7 @@ Hierarchy is driven by **weight + line-height**, not size alone. Keep to two wei
 - **About** — the conversational thread; composes `Bubble` components; owns the scroll-reveal.
 - **Bubble** — props: `variant: 'question' | 'answer'`. Question = `--surface-1`, serif italic; answer = `--surface-2`, sans, with mono chips for tech terms. Asymmetric corner per side. Answer rows also carry a `hidden` `.typing-slot` overlay (a `Typing`) pinned to the card's bottom-right corner; About's script shows it briefly before the card lands. Layout is reserved either way, so the swap causes no shift.
 - **Typing** — no props. The three-dot indicator, shaped like an answer card so it reads as "Logan is typing". Only used inside answer rows; the thread deliberately ends on the last answer rather than a dangling indicator, so nothing implies more is coming.
-- **ProjectCard** — props: `title`, `tagline`, `href`, `external?`. External (Zapmath, Fox Family) -> live site; internal (Provider Search) -> `/work/provider-directory-search`.
+- **ProjectRow** — props: `title`, `tagline`, `description`, `links`, `image`. One `<li>` in the Projects list: hairline divider, serif tagline, no card chrome. On hover-capable pointers ≥1280px, a decorative thumbnail (screenshot in `src/assets/projects/`) fades in beside the text column on hover or `:focus-within`; everywhere else it's `display: none`, so touch devices never fetch it.
 - **Footer** — "Designed and built by hand · 2026"; "built by hand" links the repo.
 
 ## Content collections (`content.config.ts`)
@@ -178,7 +178,7 @@ Astro 5 content layer. One collection now, one stubbed for later.
 
 ## Pages & routing
 
-- `index.astro` — composes Hero, About, Projects (maps `ProjectCard`s + the "Before that" note), Contact.
+- `index.astro` — composes Hero, About, Projects (maps `ProjectRow`s + the "Before that" note), Contact.
 - `work/[slug].astro` — `getStaticPaths()` over the `work` collection; renders each case study inside `BaseLayout`.
 
 ## Motion
@@ -246,9 +246,10 @@ own reviewable PR.
    state the change explicitly.
 3. ✅ **Conversation choreography** — question → typing dots → answer, released in document
    order by a sequencer; trailing indicator removed. (PR #7)
-4. **Projects** — the cards are the one generic component (border + white + radius, ×3).
-   Replace with an editorial list: hairline dividers, serif tagline, and a hover-revealed
-   thumbnail from the unused `src/assets/projects/` imagery.
+4. ✅ **Projects** — cards replaced with an editorial list (`ProjectRow`). The planned imagery
+   didn't match the projects, so Zapmath and Fox Family got fresh homepage screenshots and
+   Provider Search uses its demo poster. Thumbnails are hover-only on desktop and text-only on
+   touch, gated by `(hover: hover) and (pointer: fine)` rather than width alone.
 5. ✅ **404 page** — `src/pages/404.astro`: a single static question/answer exchange reusing
    `Bubble`, under a plain "Page not found" `h1`. No typing choreography — not worth
    extracting About's sequencer for one exchange.
