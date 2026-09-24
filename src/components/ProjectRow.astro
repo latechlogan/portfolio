@@ -107,12 +107,14 @@ const { title, tagline, description, links, image } = Astro.props;
      to flip sides or clip at the viewport edge. */
   @media (hover: hover) and (pointer: fine) and (min-width: 1280px) {
     /* Fixed, so the pointer's viewport coordinates map straight onto it;
-       the script below writes the transform. */
+       the script below writes the transform. `translate` composes with that
+       transform: it parks the image right of the cursor, centered on it. */
     .thumb {
       display: block;
       position: fixed;
       top: 0;
       left: 0;
+      translate: 20px -50%;
       z-index: 10;
       width: 240px;
       height: auto;
@@ -129,8 +131,8 @@ const { title, tagline, description, links, image } = Astro.props;
     }
   }
 
-  /* Only opacity transitions — a transform transition would make the
-     thumbnail trail the cursor instead of staying locked to it. */
+  /* Only opacity transitions — position is driven by the spring in the
+     script, and a CSS transform transition would fight it. */
   @media (prefers-reduced-motion: no-preference) {
     .thumb {
       transition: opacity 0.2s ease;
@@ -139,19 +141,45 @@ const { title, tagline, description, links, image } = Astro.props;
 </style>
 
 <script>
-  // Locks each row's thumbnail to the pointer. CSS decides *whether* it
-  // shows (hover + the media query above); this only decides *where*.
-  // Offset right of the cursor and centered on it vertically, so it
-  // never sits under the pointer.
-  const OFFSET_X = 20;
+  import { springValue, styleEffect } from "motion";
+
+  // Each row's thumbnail chases the pointer on a spring. CSS decides
+  // *whether* it shows (hover + the media query above); this only decides
+  // *where*. springValue animates toward whatever it was last .set() to and
+  // keeps its velocity when the target changes mid-flight — that's what
+  // gives the slight lag and overshoot. Underdamped (damping below
+  // critical) on purpose, so it settles with a small bounce.
+  const SPRING = { stiffness: 300, damping: 20, mass: 0.5 };
+  const prefersReducedMotion = matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
 
   document.querySelectorAll<HTMLElement>(".project").forEach((project) => {
     const thumb = project.querySelector<HTMLElement>(".thumb");
     if (!thumb) return;
 
-    project.classList.add("is-following");
-    project.addEventListener("pointermove", (event) => {
-      thumb.style.transform = `translate(${event.clientX + OFFSET_X}px, ${event.clientY}px) translateY(-50%)`;
+    const x = springValue<number>(0, SPRING);
+    const y = springValue<number>(0, SPRING);
+    styleEffect(thumb, { x, y });
+
+    // On entry, jump straight to the pointer — otherwise the thumbnail
+    // would fly in from wherever it was last left. Reduced motion always
+    // jumps, so it just tracks the cursor with no spring.
+    project.addEventListener("pointerenter", (event) => {
+      x.jump(event.clientX);
+      y.jump(event.clientY);
     });
+
+    project.addEventListener("pointermove", (event) => {
+      if (prefersReducedMotion) {
+        x.jump(event.clientX);
+        y.jump(event.clientY);
+      } else {
+        x.set(event.clientX);
+        y.set(event.clientY);
+      }
+    });
+
+    project.classList.add("is-following");
   });
 </script>

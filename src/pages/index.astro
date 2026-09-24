@@ -115,6 +115,14 @@ import providerSearchImage from "../assets/projects/provider-search-after.jpg";
     margin: 0 0 var(--space-8);
   }
 
+  /* Arrow everywhere in Projects, hand on links only — the I-beam
+     flickering on and off over text fought the hover thumbnail. Links keep
+     the hand because the UA stylesheet sets cursor: pointer on them
+     directly, which beats this inherited value. Text stays selectable. */
+  #projects {
+    cursor: default;
+  }
+
   .projects {
     list-style: none;
     padding: 0;
