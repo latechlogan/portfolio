@@ -17,6 +17,7 @@
 
   /* pops — sparing */
   --coral:         #F97648;  /* DECORATIVE only: one rare warm pop */
+  --coral-tint:    color-mix(in srgb, var(--coral) 40%, transparent);  /* hero highlighter — same in both themes */
 }
 
 [data-theme="dark"] {

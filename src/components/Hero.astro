@@ -2,10 +2,10 @@
 ---
 
 <section class="hero" aria-label="Intro">
-	<h1>Design engineer</h1>
-	<p class="tagline">
+	<p class="eyebrow">Design engineer</p>
+	<h1>
 		Happiest in the space between <em>make it beautiful</em> and <code>make it work</code>
-	</p>
+	</h1>
 	<p class="support">
 		Graphic-design roots and 7+ years building accessible, interactive experiences for the
 		web — with an eye for the details most people scroll right past.
@@ -20,32 +20,60 @@
 		padding: var(--space-16) var(--space-4);
 	}
 
-	h1 {
-		font-size: var(--text-display);
-		line-height: var(--leading-tight);
-		letter-spacing: var(--tracking-tight);
-		font-weight: 500;
-		margin: 0 0 var(--space-6);
-	}
-
-	.tagline {
-		font-size: var(--text-lg);
-		line-height: var(--leading-normal);
+	/* The role is the label; the tagline is the headline. */
+	.eyebrow {
+		font-family: var(--font-mono);
+		font-size: var(--text-sm);
+		color: var(--text-secondary);
 		margin: 0 0 var(--space-4);
 	}
 
-	.tagline em {
-		font-family: var(--font-serif);
-		font-style: italic;
+	/* Steps between two sizes already in the scale: --text-2xl on narrow
+	   screens, where the display size wraps to four lines, and the off-scale
+	   display once there's room. */
+	h1 {
+		font-size: var(--text-2xl);
+		line-height: var(--leading-snug);
+		letter-spacing: var(--tracking-tight);
+		font-weight: 500;
+		text-wrap: balance;
+		margin: 0 0 var(--space-6);
 	}
 
-	.tagline code {
+	@media (min-width: 500px) {
+		h1 {
+			font-size: var(--text-display);
+			line-height: var(--leading-tight);
+		}
+	}
+
+	/* The design half: serif, with a coral highlighter stroke across its
+	   lower half — the page's one coral moment. box-decoration-break keeps
+	   the stroke's padding on every line if the phrase ever wraps. */
+	h1 em {
+		font-family: var(--font-serif);
+		font-style: italic;
+		font-weight: 400;
+		padding: 0 0.08em;
+		background: linear-gradient(
+			transparent 60%,
+			var(--coral-tint) 60% 92%,
+			transparent 92%
+		);
+		-webkit-box-decoration-break: clone;
+		box-decoration-break: clone;
+	}
+
+	/* The code half: the same mono chip as About's tech terms, sized in em
+	   so it scales with whichever size the h1 is at. */
+	h1 code {
 		font-family: var(--font-mono);
-		font-size: 0.85em;
-		line-height: 1;
+		font-size: 0.8em;
+		font-weight: 400;
+		letter-spacing: 0;
 		background: var(--green-tint);
 		color: var(--green-ink);
-		padding: var(--space-1) var(--space-2);
+		padding: 0 0.25em;
 		border-radius: var(--radius);
 		white-space: nowrap;
 	}
