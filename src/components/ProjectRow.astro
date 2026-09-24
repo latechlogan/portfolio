@@ -108,13 +108,14 @@ const { title, tagline, description, links, image } = Astro.props;
   @media (hover: hover) and (pointer: fine) and (min-width: 1280px) {
     /* Fixed, so the pointer's viewport coordinates map straight onto it;
        the script below writes the transform. `translate` composes with that
-       transform: it parks the image right of the cursor, centered on it. */
+       transform: it parks the image below-right of the cursor, clear of the
+       text being hovered. */
     .thumb {
       display: block;
       position: fixed;
       top: 0;
       left: 0;
-      translate: 20px -50%;
+      translate: 20px 20px;
       z-index: 10;
       width: 240px;
       height: auto;
