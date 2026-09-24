@@ -57,29 +57,23 @@
 		padding: 0 0.08em;
 		background: linear-gradient(
 			transparent 60%,
-			var(--coral-tint) 60% 88%,
-			transparent 88%
+			var(--coral-tint) 60% 92%,
+			transparent 92%
 		);
 		-webkit-box-decoration-break: clone;
 		box-decoration-break: clone;
 	}
 
 	/* The code half: the same mono chip as About's tech terms, sized in em
-	   so it scales with whichever size the h1 is at. inline-block with
-	   line-height: 1 sizes the chip from its own padding instead of the
-	   font's full content box — otherwise it's tall enough to nearly touch
-	   the highlighter on the line above at --leading-tight. Together with
-	   the highlighter ending at 88%, that leaves ~12px between them. */
+	   so it scales with whichever size the h1 is at. */
 	h1 code {
-		display: inline-block;
-		line-height: 1;
 		font-family: var(--font-mono);
 		font-size: 0.8em;
 		font-weight: 400;
 		letter-spacing: 0;
 		background: var(--green-tint);
 		color: var(--green-ink);
-		padding: 0.06em 0.25em;
+		padding: 0 0.25em;
 		border-radius: var(--radius);
 		white-space: nowrap;
 	}

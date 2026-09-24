@@ -98,6 +98,7 @@ Direction: ~90% warm-neutral foundation with small, sparing color pops. Green is
 
   /* pops — sparing */
   --coral:         #F97648;  /* DECORATIVE only: one rare warm pop */
+  --coral-tint:    color-mix(in srgb, var(--coral) 40%, transparent);  /* hero highlighter — same in both themes */
 }
 
 [data-theme="dark"] {
@@ -121,7 +122,7 @@ Direction: ~90% warm-neutral foundation with small, sparing color pops. Green is
 - *Functional* (`--green-ink`, consistent for a11y): links, CTA, focus rings, active nav, text selection.
 - *Decorative* (`--green-fill`, sparing): the "LB" monogram, typing-indicator dots, small section markers, project-card hover wash.
 - *Chips* (`--green-tint`): background of the mono "make it work" chips / tech terms.
-- *Coral* (`--coral`, rare): a single warm pop — one hero detail or a lone accent moment. Not for text.
+- *Coral* (`--coral`, rare): a single warm pop — one hero detail or a lone accent moment. Not for text. Spent on the hero's highlighter stroke behind *make it beautiful* via `--coral-tint` (added Sept 2026; one value for both themes — the text on top carries the contrast either way).
 - *Tone-on-tone:* recessed `--surface-1` (question bubbles) vs. white `--surface-2` (answer cards) — quiet two-tinted-neutral contrast, no extra color.
 
 Verify all accent-on-surface pairs at WCAG AA in **both** themes before shipping.
@@ -140,7 +141,7 @@ Mirrors Stripe/Linear/Vercel: a tight, weight-driven text scale for reading/UI, 
   --text-2xl:  1.953rem;  /* larger headings */
   --text-display: clamp(2.75rem, 6vw, 4rem); /* hero — off-scale */
 
-  --leading-tight:  1.05;  /* display */
+  --leading-tight:  1.118; /* display — √1.25, half a step on the type ratio */
   --leading-snug:   1.25;  /* headings */
   --leading-normal: 1.6;   /* body */
   --tracking-tight: -0.02em; /* display + large headings */
@@ -153,6 +154,8 @@ Mirrors Stripe/Linear/Vercel: a tight, weight-driven text scale for reading/UI, 
   --measure: 64ch; /* max line length */
 }
 ```
+
+Line-heights follow the type ratio too: `snug` = 1.25¹, `normal` ≈ 1.25², and `tight` = √1.25 (half a step). `tight` was 1.05 until Sept 2026, when the hero's two-line serif/mono display needed room between the coral highlighter and the code chip.
 
 Hierarchy is driven by **weight + line-height**, not size alone. Keep to two weights (400/500). The hero display is the one place drama is allowed — it's where the serif/mono tagline lives.
 
